@@ -1,24 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 
-const API_URL = 'https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais';
+const API_URL = "https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais";
 
 export default function App() {
   // --- Estados da Aplicação (Os alunos implementarão aqui) ---
-  const [nome, setNome] = useState('');
-  const [quantidade, setQuantidade] = useState('');
+  const [nome, setNome] = useState("");
+  const [quantidade, setQuantidade] = useState("");
   const [materiais, setMateriais] = useState([]);
+  const [carregando, setCarregando] = useState(true);
 
   // --- Funções de Requisição e Efeitos (Os alunos implementarão aqui) ---
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
-      
+
       {/* Breve descrição do projeto inserida abaixo */}
       <Text style={styles.description}>
-        Este template servirá para desenvolver o projeto responsável por modernizar o controle de insumos médicos do almoxarifado. 
-        Através desta interface conectada à API, é possível realizar o inventário em tempo real, cadastrar novos materiais e registrar baixas de estoque de forma ágil e segura.
+        Este template servirá para desenvolver o projeto responsável por
+        modernizar o controle de insumos médicos do almoxarifado. Através desta
+        interface conectada à API, é possível realizar o inventário em tempo
+        real, cadastrar novos materiais e registrar baixas de estoque de forma
+        ágil e segura.
       </Text>
 
       <Text style={styles.label}>Nome do material</Text>
@@ -44,22 +56,27 @@ export default function App() {
       <TouchableOpacity
         testID="btn-cadastrar"
         style={styles.button}
-        onPress={() => console.log('Botão cadastrar pressionado')}
-      > 
+        onPress={() => console.log("Botão cadastrar pressionado")}
+      >
         <Text style={styles.buttonText}>Cadastrar material</Text>
       </TouchableOpacity>
 
       <Text style={styles.sectionTitle}>Materiais cadastrados</Text>
 
+      {carregando ? (
+        <ActivityIndicator
+          size="large"
+          color="#2E7D32"
+          style={styles.loading}
+        />
+      ) : (
         <FlatList
-         testID="lista-materiais"
+          testID="lista-materiais"
           data={materiais}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => (
             <View style={styles.materialItem}>
-              <Text style={styles.materialName}>
-                {item.nome || item.name}
-              </Text>
+              <Text style={styles.materialName}>{item.nome || item.name}</Text>
 
               <Text style={styles.materialQuantity}>
                 Quantidade: {item.quantidadeAtual}
@@ -67,12 +84,10 @@ export default function App() {
             </View>
           )}
           ListEmptyComponent={
-            <Text style={styles.emptyText}>
-              Nenhum material cadastrado.
-            </Text>
+            <Text style={styles.emptyText}>Nenhum material cadastrado.</Text>
           }
         />
-      
+      )}
     </View>
   );
 }
@@ -80,79 +95,82 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingTop: 50,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 10, // Reduzido ligeiramente para aproximar o texto explicativo
-    color: '#333',
+    color: "#333",
   },
   description: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     lineHeight: 20, // Dá um espaçamento confortável entre as linhas do parágrafo
     marginBottom: 30, // Margem inferior para afastar o texto dos futuros inputs dos alunos
   },
   label: {
-  fontSize: 14,
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: 6,
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 6,
   },
   input: {
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 8,
-  paddingHorizontal: 12,
-  paddingVertical: 10,
-  marginBottom: 15,
-  backgroundColor: '#fff',
-},
-button: {
-  backgroundColor: '#2E7D32',
-  paddingVertical: 12,
-  borderRadius: 8,
-  alignItems: 'center',
-  marginBottom: 20,
-},
-buttonText: {
-  color: '#fff',
-  fontSize: 16,
-  fontWeight: 'bold',
-},
-sectionTitle: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: 10,
-},
-materialItem: {
-  borderWidth: 1,
-  borderColor: '#ddd',
-  borderRadius: 8,
-  padding: 12,
-  marginBottom: 10,
-  backgroundColor: '#f9f9f9',
-},
-materialName: {
-  fontSize: 16,
-  fontWeight: 'bold',
-  color: '#333',
-},
-materialQuantity: {
-  fontSize: 14,
-  color: '#666',
-  marginTop: 4,
-},
-emptyText: {
-  fontSize: 14,
-  color: '#777',
-  textAlign: 'center',
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 15,
+    backgroundColor: "#fff",
+  },
+  button: {
+    backgroundColor: "#2E7D32",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 10,
+  },
+  materialItem: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+    backgroundColor: "#f9f9f9",
+  },
+  materialName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  materialQuantity: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 4,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: "#777",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  loading: {
   marginTop: 20,
 },
 });
