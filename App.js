@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Activity
 
 export default function App() {
   // --- Estados da Aplicação (Os alunos implementarão aqui) ---
+  const [nome, setNome] = useState('');
+  const [quantidade, setQuantidade] = useState('');
 
   // --- Funções de Requisição e Efeitos (Os alunos implementarão aqui) ---
 
