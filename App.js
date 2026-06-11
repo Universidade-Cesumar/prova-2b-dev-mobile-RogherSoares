@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 
+const API_URL = 'https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais';
+
 export default function App() {
   // --- Estados da Aplicação (Os alunos implementarão aqui) ---
   const [nome, setNome] = useState('');
