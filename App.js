@@ -39,6 +39,14 @@ export default function App() {
         onChangeText={setQuantidade}
         keyboardType="numeric"
       />
+
+      <TouchableOpacity
+        testID="btn-cadastrar"
+        style={styles.button}
+        onPress={() => console.log('Botão cadastrar pressionado')}
+      > 
+        <Text style={styles.buttonText}>Cadastrar material</Text>
+      </TouchableOpacity>
       
     </View>
   );
@@ -79,5 +87,17 @@ const styles = StyleSheet.create({
   paddingVertical: 10,
   marginBottom: 15,
   backgroundColor: '#fff',
+},
+button: {
+  backgroundColor: '#2E7D32',
+  paddingVertical: 12,
+  borderRadius: 8,
+  alignItems: 'center',
+  marginBottom: 20,
+},
+buttonText: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: 'bold',
 },
 });
