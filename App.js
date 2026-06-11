@@ -38,6 +38,10 @@ export default function App() {
       setCarregando(false);
     }
   };
+  
+  useEffect(() => {
+    buscarMateriais();
+  }, []);
 
   return (
     <View style={styles.container}>
