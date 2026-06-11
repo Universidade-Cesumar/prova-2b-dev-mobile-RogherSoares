@@ -16,9 +16,28 @@ export default function App() {
   const [nome, setNome] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [materiais, setMateriais] = useState([]);
-  const [carregando, setCarregando] = useState(true);
+  const [carregando, setCarregando] = useState(false);
 
   // --- Funções de Requisição e Efeitos (Os alunos implementarão aqui) ---
+  const buscarMateriais = async () => {
+    try {
+      setCarregando(true);
+
+      const resposta = await fetch(API_URL);
+
+      if (!resposta.ok) {
+        throw new Error("Não foi possível buscar os materiais.");
+      }
+
+      const dados = await resposta.json();
+
+      setMateriais(dados);
+    } catch (erro) {
+      console.error("Erro ao buscar materiais:", erro);
+    } finally {
+      setCarregando(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -171,6 +190,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   loading: {
-  marginTop: 20,
-},
+    marginTop: 20,
+  },
 });
