@@ -48,6 +48,30 @@ export default function App() {
       > 
         <Text style={styles.buttonText}>Cadastrar material</Text>
       </TouchableOpacity>
+
+      <Text style={styles.sectionTitle}>Materiais cadastrados</Text>
+
+        <FlatList
+         testID="lista-materiais"
+          data={materiais}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => (
+            <View style={styles.materialItem}>
+              <Text style={styles.materialName}>
+                {item.nome || item.name}
+              </Text>
+
+              <Text style={styles.materialQuantity}>
+                Quantidade: {item.quantidadeAtual}
+              </Text>
+            </View>
+          )}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>
+              Nenhum material cadastrado.
+            </Text>
+          }
+        />
       
     </View>
   );
@@ -100,5 +124,35 @@ buttonText: {
   color: '#fff',
   fontSize: 16,
   fontWeight: 'bold',
+},
+sectionTitle: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  color: '#333',
+  marginBottom: 10,
+},
+materialItem: {
+  borderWidth: 1,
+  borderColor: '#ddd',
+  borderRadius: 8,
+  padding: 12,
+  marginBottom: 10,
+  backgroundColor: '#f9f9f9',
+},
+materialName: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#333',
+},
+materialQuantity: {
+  fontSize: 14,
+  color: '#666',
+  marginTop: 4,
+},
+emptyText: {
+  fontSize: 14,
+  color: '#777',
+  textAlign: 'center',
+  marginTop: 20,
 },
 });
