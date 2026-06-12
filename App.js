@@ -88,6 +88,9 @@ export default function App() {
       if (!resposta.ok) {
         throw new Error("Não foi possível cadastrar o material.");
       }
+      
+      setNome("");
+      setQuantidade("");
 
       Alert.alert("Sucesso", "Material cadastrado com sucesso!");
     } catch (erro) {
