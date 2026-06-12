@@ -88,7 +88,11 @@ export default function App() {
       if (!resposta.ok) {
         throw new Error("Não foi possível cadastrar o material.");
       }
-      
+
+      const materialCadastrado = await resposta.json();
+
+      setMateriais((listaAtual) => [...listaAtual, materialCadastrado]);
+
       setNome("");
       setQuantidade("");
 
