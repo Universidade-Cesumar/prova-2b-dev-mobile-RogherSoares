@@ -18,6 +18,7 @@ export default function App() {
   const [quantidade, setQuantidade] = useState("");
   const [materiais, setMateriais] = useState([]);
   const [carregando, setCarregando] = useState(false);
+  const [cadastrando, setCadastrando] = useState(false);
 
   // --- Funções de Requisição e Efeitos (Os alunos implementarão aqui) ---
   const buscarMateriais = async () => {
@@ -70,6 +71,10 @@ export default function App() {
   };
 
   const cadastrarMaterial = async () => {
+    if (cadastrando) {
+      return;
+    }
+
     const novoMaterial = validarFormulario();
 
     if (!novoMaterial) {
@@ -77,6 +82,8 @@ export default function App() {
     }
 
     try {
+      setCadastrando(true);
+
       const resposta = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -104,6 +111,8 @@ export default function App() {
         "Erro",
         "Não foi possível cadastrar o material. Tente novamente.",
       );
+    } finally {
+      setCadastrando(false);
     }
   };
 
@@ -146,10 +155,15 @@ export default function App() {
 
       <TouchableOpacity
         testID="btn-cadastrar"
-        style={styles.button}
+        style={[styles.button, cadastrando && styles.buttonDisabled]}
         onPress={cadastrarMaterial}
+        disabled={cadastrando}
       >
-        <Text style={styles.buttonText}>Cadastrar material</Text>
+        {cadastrando ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Cadastrar material</Text>
+        )}
       </TouchableOpacity>
 
       <Text style={styles.sectionTitle}>Materiais cadastrados</Text>
@@ -264,4 +278,7 @@ const styles = StyleSheet.create({
   loading: {
     marginTop: 20,
   },
+  buttonDisabled: {
+  opacity: 0.6,
+},
 });
