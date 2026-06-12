@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 
 const API_URL = "https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais";
@@ -38,7 +39,38 @@ export default function App() {
       setCarregando(false);
     }
   };
-  
+
+  const validarFormulario = () => {
+    const nomeTratado = nome.trim();
+    const quantidadeNumerica = Number(quantidade);
+
+    if (!nomeTratado) {
+      Alert.alert("Atenção", "Informe o nome do material.");
+      return false;
+    }
+
+    if (!quantidade.trim()) {
+      Alert.alert("Atenção", "Informe a quantidade do material.");
+      return false;
+    }
+
+    if (!Number.isInteger(quantidadeNumerica) || quantidadeNumerica <= 0) {
+      Alert.alert(
+        "Atenção",
+        "A quantidade deve ser um número inteiro maior que zero.",
+      );
+
+      return false;
+    }
+
+    console.log("Dados válidos:", {
+      nome: nomeTratado,
+      quantidadeAtual: quantidadeNumerica,
+    });
+
+    return true;
+  };
+
   useEffect(() => {
     buscarMateriais();
   }, []);
@@ -79,7 +111,7 @@ export default function App() {
       <TouchableOpacity
         testID="btn-cadastrar"
         style={styles.button}
-        onPress={() => console.log("Botão cadastrar pressionado")}
+        onPress={validarFormulario}
       >
         <Text style={styles.buttonText}>Cadastrar material</Text>
       </TouchableOpacity>
