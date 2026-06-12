@@ -46,12 +46,12 @@ export default function App() {
 
     if (!nomeTratado) {
       Alert.alert("Atenção", "Informe o nome do material.");
-      return false;
+      return null;
     }
 
     if (!quantidade.trim()) {
       Alert.alert("Atenção", "Informe a quantidade do material.");
-      return false;
+      return null;
     }
 
     if (!Number.isInteger(quantidadeNumerica) || quantidadeNumerica <= 0) {
@@ -60,15 +60,44 @@ export default function App() {
         "A quantidade deve ser um número inteiro maior que zero.",
       );
 
-      return false;
+      return null;
     }
 
-    console.log("Dados válidos:", {
+    return {
       nome: nomeTratado,
       quantidadeAtual: quantidadeNumerica,
-    });
+    };
+  };
 
-    return true;
+  const cadastrarMaterial = async () => {
+    const novoMaterial = validarFormulario();
+
+    if (!novoMaterial) {
+      return;
+    }
+
+    try {
+      const resposta = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(novoMaterial),
+      });
+
+      if (!resposta.ok) {
+        throw new Error("Não foi possível cadastrar o material.");
+      }
+
+      Alert.alert("Sucesso", "Material cadastrado com sucesso!");
+    } catch (erro) {
+      console.error("Erro ao cadastrar material:", erro);
+
+      Alert.alert(
+        "Erro",
+        "Não foi possível cadastrar o material. Tente novamente.",
+      );
+    }
   };
 
   useEffect(() => {
@@ -111,7 +140,7 @@ export default function App() {
       <TouchableOpacity
         testID="btn-cadastrar"
         style={styles.button}
-        onPress={validarFormulario}
+        onPress={cadastrarMaterial}
       >
         <Text style={styles.buttonText}>Cadastrar material</Text>
       </TouchableOpacity>
