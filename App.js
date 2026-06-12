@@ -8,6 +8,8 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 
 const API_URL = "https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais";
@@ -121,7 +123,10 @@ export default function App() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
 
       {/* Breve descrição do projeto inserida abaixo */}
@@ -193,7 +198,7 @@ export default function App() {
           }
         />
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
