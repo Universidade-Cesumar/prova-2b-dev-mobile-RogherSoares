@@ -21,11 +21,16 @@ export default function App() {
   const [materiais, setMateriais] = useState([]);
   const [carregando, setCarregando] = useState(false);
   const [cadastrando, setCadastrando] = useState(false);
+  const [atualizando, setAtualizando] = useState(false);
 
   // --- Funções de Requisição e Efeitos (Os alunos implementarão aqui) ---
-  const buscarMateriais = async () => {
+  const buscarMateriais = async (atualizacaoManual = false) => {
     try {
-      setCarregando(true);
+      if (atualizacaoManual) {
+        setAtualizando(true);
+      } else {
+        setCarregando(true);
+      }
 
       const resposta = await fetch(API_URL);
 
@@ -38,8 +43,14 @@ export default function App() {
       setMateriais(dados);
     } catch (erro) {
       console.error("Erro ao buscar materiais:", erro);
+
+      Alert.alert("Erro", "Não foi possível atualizar a lista de materiais.");
     } finally {
-      setCarregando(false);
+      if (atualizacaoManual) {
+        setAtualizando(false);
+      } else {
+        setCarregando(false);
+      }
     }
   };
 
@@ -125,7 +136,7 @@ export default function App() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
 
@@ -183,6 +194,8 @@ export default function App() {
         <FlatList
           testID="lista-materiais"
           data={materiais}
+          refreshing={atualizando}
+          onRefresh={() => buscarMateriais(true)}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => (
             <View style={styles.materialItem}>
@@ -284,6 +297,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonDisabled: {
-  opacity: 0.6,
-},
+    opacity: 0.6,
+  },
 });
