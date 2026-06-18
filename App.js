@@ -342,6 +342,15 @@ export default function App() {
                   <Text style={styles.baixarButtonText}>Dar baixa</Text>
                 )}
               </TouchableOpacity>
+              <TouchableOpacity
+                testID="btn-excluir"
+                style={styles.excluirButton}
+                onPress={() =>
+                  console.log("Exclusão solicitada para o material:", item.id)
+                }
+              >
+                <Text style={styles.excluirButtonText}>Excluir material</Text>
+              </TouchableOpacity>
             </View>
           )}
           ListEmptyComponent={
@@ -464,4 +473,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
   },
+  excluirButton: {
+  backgroundColor: "#C62828",
+  borderRadius: 8,
+  paddingVertical: 10,
+  alignItems: "center",
+  marginTop: 8,
+},
+excluirButtonText: {
+  color: "#fff",
+  fontSize: 14,
+  fontWeight: "bold",
+},
 });
