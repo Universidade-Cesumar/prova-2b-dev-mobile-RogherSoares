@@ -193,7 +193,19 @@ export default function App() {
 
       const materialAtualizado = await resposta.json();
 
-      console.log("Material atualizado:", materialAtualizado);
+      setMateriais((listaAtual) =>
+        listaAtual.map((itemAtual) =>
+          String(itemAtual.id) === materialId ? materialAtualizado : itemAtual,
+        ),
+      );
+
+      setQuantidadesRetirada((valoresAtuais) => {
+        const novosValores = { ...valoresAtuais };
+
+        delete novosValores[materialId];
+
+        return novosValores;
+      });
 
       Alert.alert(
         "Baixa realizada",
