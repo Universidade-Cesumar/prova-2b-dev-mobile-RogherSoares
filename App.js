@@ -148,7 +148,7 @@ export default function App() {
   const solicitarBaixa = async (material) => {
     const materialId = String(material.id);
 
-    if (baixasEmAndamento[materialId]) {
+    if (baixasEmAndamento[materialId] || exclusoesEmAndamento[materialId]) {
       return;
     }
 
@@ -244,7 +244,7 @@ export default function App() {
   const excluirMaterial = async (material) => {
     const materialId = String(material.id);
 
-    if (exclusoesEmAndamento[materialId]) {
+    if (exclusoesEmAndamento[materialId] || baixasEmAndamento[materialId]) {
       return;
     }
 
@@ -404,10 +404,15 @@ export default function App() {
                 testID="btn-baixar"
                 style={[
                   styles.baixarButton,
-                  baixasEmAndamento[String(item.id)] && styles.buttonDisabled,
+                  (baixasEmAndamento[String(item.id)] ||
+                    exclusoesEmAndamento[String(item.id)]) &&
+                    styles.buttonDisabled,
                 ]}
                 onPress={() => solicitarBaixa(item)}
-                disabled={Boolean(baixasEmAndamento[String(item.id)])}
+                disabled={Boolean(
+                  baixasEmAndamento[String(item.id)] ||
+                  exclusoesEmAndamento[String(item.id)],
+                )}
               >
                 {baixasEmAndamento[String(item.id)] ? (
                   <ActivityIndicator size="small" color="#fff" />
@@ -419,11 +424,15 @@ export default function App() {
                 testID="btn-excluir"
                 style={[
                   styles.excluirButton,
-                  exclusoesEmAndamento[String(item.id)] &&
+                  (exclusoesEmAndamento[String(item.id)] ||
+                    baixasEmAndamento[String(item.id)]) &&
                     styles.buttonDisabled,
                 ]}
                 onPress={() => confirmarExclusao(item)}
-                disabled={Boolean(exclusoesEmAndamento[String(item.id)])}
+                disabled={Boolean(
+                  exclusoesEmAndamento[String(item.id)] ||
+                  baixasEmAndamento[String(item.id)],
+                )}
               >
                 {exclusoesEmAndamento[String(item.id)] ? (
                   <ActivityIndicator size="small" color="#fff" />
