@@ -230,6 +230,15 @@ export default function App() {
                   }))
                 }
               />
+              <TouchableOpacity
+                testID="btn-baixar"
+                style={styles.baixarButton}
+                onPress={() =>
+                  console.log("Baixa solicitada para o material:", item.id)
+                }
+              >
+                <Text style={styles.baixarButtonText}>Dar baixa</Text>
+              </TouchableOpacity>
             </View>
           )}
           ListEmptyComponent={
@@ -326,18 +335,30 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   retiradaLabel: {
-  fontSize: 13,
-  fontWeight: "bold",
-  color: "#444",
-  marginTop: 12,
-  marginBottom: 6,
-},
-retiradaInput: {
-  borderWidth: 1,
-  borderColor: "#bbb",
+    fontSize: 13,
+    fontWeight: "bold",
+    color: "#444",
+    marginTop: 12,
+    marginBottom: 6,
+  },
+  retiradaInput: {
+    borderWidth: 1,
+    borderColor: "#bbb",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  baixarButton: {
+  backgroundColor: "#1565C0",
   borderRadius: 8,
-  backgroundColor: "#fff",
-  paddingHorizontal: 10,
-  paddingVertical: 8,
+  paddingVertical: 10,
+  alignItems: "center",
+  marginTop: 10,
+},
+baixarButtonText: {
+  color: "#fff",
+  fontSize: 14,
+  fontWeight: "bold",
 },
 });
