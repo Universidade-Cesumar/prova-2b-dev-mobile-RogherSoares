@@ -219,7 +219,7 @@ export default function App() {
 
               <TextInput
                 testID="input-retirada"
-                style={styles.input}
+                style={styles.retiradaInput}
                 placeholder="Ex.: 5"
                 keyboardType="numeric"
                 value={quantidadesRetirada[String(item.id)] || ""}
@@ -325,4 +325,19 @@ const styles = StyleSheet.create({
   buttonDisabled: {
     opacity: 0.6,
   },
+  retiradaLabel: {
+  fontSize: 13,
+  fontWeight: "bold",
+  color: "#444",
+  marginTop: 12,
+  marginBottom: 6,
+},
+retiradaInput: {
+  borderWidth: 1,
+  borderColor: "#bbb",
+  borderRadius: 8,
+  backgroundColor: "#fff",
+  paddingHorizontal: 10,
+  paddingVertical: 8,
+},
 });
