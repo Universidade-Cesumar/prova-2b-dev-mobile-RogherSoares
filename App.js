@@ -143,7 +143,7 @@ export default function App() {
     }
   };
 
-  const solicitarBaixa = (material) => {
+  const solicitarBaixa = async (material) => {
     const materialId = String(material.id);
     const valorInformado = quantidadesRetirada[materialId];
 
@@ -173,12 +173,40 @@ export default function App() {
 
     const novoEstoque = estoqueAtual - quantidadeRetirada;
 
-    console.log("Retirada permitida:", {
-      materialId,
-      estoqueAtual,
-      quantidadeRetirada,
-      novoEstoque,
-    });
+    try {
+      const { id, ...dadosMaterial } = material;
+
+      const resposta = await fetch(`${API_URL}/${materialId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...dadosMaterial,
+          quantidadeAtual: novoEstoque,
+        }),
+      });
+
+      if (!resposta.ok) {
+        throw new Error("Não foi possível realizar a baixa.");
+      }
+
+      const materialAtualizado = await resposta.json();
+
+      console.log("Material atualizado:", materialAtualizado);
+
+      Alert.alert(
+        "Baixa realizada",
+        `${quantidadeRetirada} unidade(s) retirada(s) com sucesso.`,
+      );
+    } catch (erro) {
+      console.error("Erro ao realizar baixa:", erro);
+
+      Alert.alert(
+        "Erro",
+        "Não foi possível realizar a baixa no estoque. Tente novamente.",
+      );
+    }
   };
 
   useEffect(() => {
