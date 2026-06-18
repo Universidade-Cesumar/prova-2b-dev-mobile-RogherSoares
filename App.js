@@ -143,6 +143,44 @@ export default function App() {
     }
   };
 
+  const solicitarBaixa = (material) => {
+    const materialId = String(material.id);
+    const valorInformado = quantidadesRetirada[materialId];
+
+    if (!valorInformado || !valorInformado.trim()) {
+      Alert.alert("Atenção", "Informe a quantidade que deseja retirar.");
+      return;
+    }
+
+    const estoqueAtual = Number(material.quantidadeAtual);
+    const quantidadeRetirada = Number(valorInformado);
+
+    if (!Number.isInteger(quantidadeRetirada)) {
+      Alert.alert(
+        "Retirada inválida",
+        "A quantidade retirada deve ser um número inteiro.",
+      );
+      return;
+    }
+
+    if (!validarRetirada(estoqueAtual, quantidadeRetirada)) {
+      Alert.alert(
+        "Retirada inválida",
+        `Não é possível retirar ${quantidadeRetirada} unidade(s). O estoque disponível é de ${estoqueAtual} unidade(s).`,
+      );
+      return;
+    }
+
+    const novoEstoque = estoqueAtual - quantidadeRetirada;
+
+    console.log("Retirada permitida:", {
+      materialId,
+      estoqueAtual,
+      quantidadeRetirada,
+      novoEstoque,
+    });
+  };
+
   useEffect(() => {
     buscarMateriais();
   }, []);
@@ -233,9 +271,7 @@ export default function App() {
               <TouchableOpacity
                 testID="btn-baixar"
                 style={styles.baixarButton}
-                onPress={() =>
-                  console.log("Baixa solicitada para o material:", item.id)
-                }
+                onPress={() => solicitarBaixa(item)}
               >
                 <Text style={styles.baixarButtonText}>Dar baixa</Text>
               </TouchableOpacity>
@@ -350,15 +386,15 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   baixarButton: {
-  backgroundColor: "#1565C0",
-  borderRadius: 8,
-  paddingVertical: 10,
-  alignItems: "center",
-  marginTop: 10,
-},
-baixarButtonText: {
-  color: "#fff",
-  fontSize: 14,
-  fontWeight: "bold",
-},
+    backgroundColor: "#1565C0",
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  baixarButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
 });
