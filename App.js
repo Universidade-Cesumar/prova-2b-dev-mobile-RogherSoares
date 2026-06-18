@@ -298,6 +298,18 @@ export default function App() {
   const confirmarExclusao = (material) => {
     const nomeMaterial = material.nome || material.name || "Material sem nome";
 
+    if (Platform.OS === "web") {
+      const confirmouExclusao = window.confirm(
+        `Deseja realmente excluir "${nomeMaterial}"?`,
+      );
+
+      if (confirmouExclusao) {
+        excluirMaterial(material);
+      }
+
+      return;
+    }
+
     Alert.alert(
       "Excluir material",
       `Deseja realmente excluir "${nomeMaterial}"?`,
