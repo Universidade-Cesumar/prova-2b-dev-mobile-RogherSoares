@@ -35,6 +35,7 @@ export default function App() {
   const [carregando, setCarregando] = useState(false);
   const [cadastrando, setCadastrando] = useState(false);
   const [atualizando, setAtualizando] = useState(false);
+  const [quantidadesRetirada, setQuantidadesRetirada] = useState({});
 
   // --- Funções de Requisição e Efeitos ---
   const buscarMateriais = async (atualizacaoManual = false) => {
