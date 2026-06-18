@@ -240,6 +240,28 @@ export default function App() {
     }
   };
 
+  const confirmarExclusao = (material) => {
+    const nomeMaterial = material.nome || material.name || "Material sem nome";
+
+    Alert.alert(
+      "Excluir material",
+      `Deseja realmente excluir "${nomeMaterial}"?`,
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: () => {
+            console.log("Exclusão confirmada para o material:", material.id);
+          },
+        },
+      ],
+    );
+  };
+
   useEffect(() => {
     buscarMateriais();
   }, []);
@@ -345,9 +367,7 @@ export default function App() {
               <TouchableOpacity
                 testID="btn-excluir"
                 style={styles.excluirButton}
-                onPress={() =>
-                  console.log("Exclusão solicitada para o material:", item.id)
-                }
+                onPress={() => confirmarExclusao(item)}
               >
                 <Text style={styles.excluirButtonText}>Excluir material</Text>
               </TouchableOpacity>
@@ -474,15 +494,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   excluirButton: {
-  backgroundColor: "#C62828",
-  borderRadius: 8,
-  paddingVertical: 10,
-  alignItems: "center",
-  marginTop: 8,
-},
-excluirButtonText: {
-  color: "#fff",
-  fontSize: 14,
-  fontWeight: "bold",
-},
+    backgroundColor: "#C62828",
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  excluirButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
 });
