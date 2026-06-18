@@ -212,8 +212,24 @@ export default function App() {
               <Text style={styles.materialName}>{item.nome || item.name}</Text>
 
               <Text style={styles.materialQuantity}>
-                Quantidade: {item.quantidadeAtual}
+                Quantidade disponível: {item.quantidadeAtual}
               </Text>
+
+              <Text style={styles.label}>Quantidade para retirar</Text>
+
+              <TextInput
+                testID="input-retirada"
+                style={styles.input}
+                placeholder="Ex.: 5"
+                keyboardType="numeric"
+                value={quantidadesRetirada[String(item.id)] || ""}
+                onChangeText={(novoValor) =>
+                  setQuantidadesRetirada((valoresAtuais) => ({
+                    ...valoresAtuais,
+                    [String(item.id)]: novoValor,
+                  }))
+                }
+              />
             </View>
           )}
           ListEmptyComponent={
