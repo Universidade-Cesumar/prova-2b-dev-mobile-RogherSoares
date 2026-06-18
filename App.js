@@ -36,6 +36,7 @@ export default function App() {
   const [cadastrando, setCadastrando] = useState(false);
   const [atualizando, setAtualizando] = useState(false);
   const [quantidadesRetirada, setQuantidadesRetirada] = useState({});
+  const [baixasEmAndamento, setBaixasEmAndamento] = useState({});
 
   // --- Funções de Requisição e Efeitos ---
   const buscarMateriais = async (atualizacaoManual = false) => {
@@ -145,6 +146,11 @@ export default function App() {
 
   const solicitarBaixa = async (material) => {
     const materialId = String(material.id);
+
+    if (baixasEmAndamento[materialId]) {
+      return;
+    }
+
     const valorInformado = quantidadesRetirada[materialId];
 
     if (!valorInformado || !valorInformado.trim()) {
@@ -174,6 +180,11 @@ export default function App() {
     const novoEstoque = estoqueAtual - quantidadeRetirada;
 
     try {
+      setBaixasEmAndamento((estadoAtual) => ({
+        ...estadoAtual,
+        [materialId]: true,
+      }));
+
       const { id, ...dadosMaterial } = material;
 
       const resposta = await fetch(`${API_URL}/${materialId}`, {
@@ -218,6 +229,14 @@ export default function App() {
         "Erro",
         "Não foi possível realizar a baixa no estoque. Tente novamente.",
       );
+    } finally {
+      setBaixasEmAndamento((estadoAtual) => {
+        const novoEstado = { ...estadoAtual };
+
+        delete novoEstado[materialId];
+
+        return novoEstado;
+      });
     }
   };
 
@@ -310,10 +329,18 @@ export default function App() {
               />
               <TouchableOpacity
                 testID="btn-baixar"
-                style={styles.baixarButton}
+                style={[
+                  styles.baixarButton,
+                  baixasEmAndamento[String(item.id)] && styles.buttonDisabled,
+                ]}
                 onPress={() => solicitarBaixa(item)}
+                disabled={Boolean(baixasEmAndamento[String(item.id)])}
               >
-                <Text style={styles.baixarButtonText}>Dar baixa</Text>
+                {baixasEmAndamento[String(item.id)] ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text style={styles.baixarButtonText}>Dar baixa</Text>
+                )}
               </TouchableOpacity>
             </View>
           )}
