@@ -37,6 +37,7 @@ export default function App() {
   const [atualizando, setAtualizando] = useState(false);
   const [quantidadesRetirada, setQuantidadesRetirada] = useState({});
   const [baixasEmAndamento, setBaixasEmAndamento] = useState({});
+  const [exclusoesEmAndamento, setExclusoesEmAndamento] = useState({});
 
   // --- Funções de Requisição e Efeitos ---
   const buscarMateriais = async (atualizacaoManual = false) => {
@@ -243,7 +244,16 @@ export default function App() {
   const excluirMaterial = async (material) => {
     const materialId = String(material.id);
 
+    if (exclusoesEmAndamento[materialId]) {
+      return;
+    }
+
     try {
+      setExclusoesEmAndamento((estadoAtual) => ({
+        ...estadoAtual,
+        [materialId]: true,
+      }));
+
       const resposta = await fetch(`${API_URL}/${materialId}`, {
         method: "DELETE",
       });
@@ -272,6 +282,14 @@ export default function App() {
         "Erro",
         "Não foi possível excluir o material. Tente novamente.",
       );
+    } finally {
+      setExclusoesEmAndamento((estadoAtual) => {
+        const novoEstado = { ...estadoAtual };
+
+        delete novoEstado[materialId];
+
+        return novoEstado;
+      });
     }
   };
 
@@ -399,10 +417,19 @@ export default function App() {
               </TouchableOpacity>
               <TouchableOpacity
                 testID="btn-excluir"
-                style={styles.excluirButton}
+                style={[
+                  styles.excluirButton,
+                  exclusoesEmAndamento[String(item.id)] &&
+                    styles.buttonDisabled,
+                ]}
                 onPress={() => confirmarExclusao(item)}
+                disabled={Boolean(exclusoesEmAndamento[String(item.id)])}
               >
-                <Text style={styles.excluirButtonText}>Excluir material</Text>
+                {exclusoesEmAndamento[String(item.id)] ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text style={styles.excluirButtonText}>Excluir material</Text>
+                )}
               </TouchableOpacity>
             </View>
           )}
