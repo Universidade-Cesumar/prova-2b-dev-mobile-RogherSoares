@@ -14,6 +14,19 @@ import {
 
 const API_URL = "https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais";
 
+export function validarRetirada(estoqueAtual, quantidadeRetirada) {
+  const estoque = Number(estoqueAtual);
+  const retirada = Number(quantidadeRetirada);
+
+  return (
+    Number.isFinite(estoque) &&
+    Number.isFinite(retirada) &&
+    estoque >= 0 &&
+    retirada > 0 &&
+    retirada <= estoque
+  );
+}
+
 export default function App() {
   // --- Estados da Aplicação ---
   const [nome, setNome] = useState("");
