@@ -240,6 +240,41 @@ export default function App() {
     }
   };
 
+  const excluirMaterial = async (material) => {
+    const materialId = String(material.id);
+
+    try {
+      const resposta = await fetch(`${API_URL}/${materialId}`, {
+        method: "DELETE",
+      });
+
+      if (!resposta.ok) {
+        throw new Error("Não foi possível excluir o material.");
+      }
+
+      setMateriais((listaAtual) =>
+        listaAtual.filter((itemAtual) => String(itemAtual.id) !== materialId),
+      );
+
+      setQuantidadesRetirada((valoresAtuais) => {
+        const novosValores = { ...valoresAtuais };
+
+        delete novosValores[materialId];
+
+        return novosValores;
+      });
+
+      Alert.alert("Material excluído", "O material foi excluído com sucesso.");
+    } catch (erro) {
+      console.error("Erro ao excluir material:", erro);
+
+      Alert.alert(
+        "Erro",
+        "Não foi possível excluir o material. Tente novamente.",
+      );
+    }
+  };
+
   const confirmarExclusao = (material) => {
     const nomeMaterial = material.nome || material.name || "Material sem nome";
 
@@ -254,9 +289,7 @@ export default function App() {
         {
           text: "Excluir",
           style: "destructive",
-          onPress: () => {
-            console.log("Exclusão confirmada para o material:", material.id);
-          },
+          onPress: () => excluirMaterial(material),
         },
       ],
     );
