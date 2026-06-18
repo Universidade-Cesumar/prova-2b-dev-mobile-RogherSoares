@@ -21,6 +21,8 @@ export function validarRetirada(estoqueAtual, quantidadeRetirada) {
   return (
     Number.isFinite(estoque) &&
     Number.isFinite(retirada) &&
+    Number.isInteger(estoque) &&
+    Number.isInteger(retirada) &&
     estoque >= 0 &&
     retirada > 0 &&
     retirada <= estoque
