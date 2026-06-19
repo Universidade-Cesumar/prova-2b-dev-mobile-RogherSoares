@@ -1,12 +1,14 @@
 # Almoxarifado - Enfermagem
 
-Aplicativo mobile desenvolvido para modernizar o controle de materiais do almoxarifado utilizado nas atividades práticas do curso de Enfermagem.
+Aplicativo mobile desenvolvido para modernizar o controle dos materiais utilizados no almoxarifado das atividades práticas do curso de Enfermagem.
 
-O sistema permite consultar o inventário em tempo real e cadastrar novos materiais diretamente pelo celular. Os dados são armazenados em uma API simulada criada com a plataforma MockAPI.
+O sistema permite consultar o inventário, cadastrar novos materiais, registrar baixas no estoque e excluir registros. Os dados são armazenados em uma API simulada criada com a plataforma MockAPI.
 
 ## Objetivo
 
-Facilitar o registro dos materiais disponíveis no almoxarifado, reduzindo a necessidade de anotações em papel e atualizações manuais em planilhas.
+Facilitar o registro e o controle dos materiais disponíveis no almoxarifado, reduzindo a necessidade de anotações em papel e atualizações manuais em planilhas.
+
+O aplicativo busca oferecer uma alternativa simples e acessível para acompanhar o estoque diretamente por dispositivos móveis.
 
 ## Funcionalidades implementadas
 
@@ -15,7 +17,7 @@ Facilitar o registro dos materiais disponíveis no almoxarifado, reduzindo a nec
 * Consulta automática dos materiais ao abrir o aplicativo;
 * Exibição dinâmica do inventário em uma lista;
 * Atualização manual da lista ao puxá-la para baixo;
-* Indicadores visuais durante requisições;
+* Indicadores visuais durante as requisições;
 * Bloqueio de cadastros duplicados;
 * Limpeza automática do formulário após o cadastro;
 * Baixa rápida de materiais diretamente pela lista;
@@ -25,6 +27,7 @@ Facilitar o registro dos materiais disponíveis no almoxarifado, reduzindo a nec
 * Atualização imediata da quantidade exibida na interface;
 * Exclusão de materiais com confirmação do usuário;
 * Exclusão permanente dos registros por meio de requisição `DELETE`;
+* Atualização automática da lista depois de uma exclusão;
 * Bloqueio de ações duplicadas durante as requisições;
 * Testes unitários da função `validarRetirada` com Jest;
 * Tratamento básico de erros de comunicação com a API.
@@ -33,8 +36,8 @@ Facilitar o registro dos materiais disponíveis no almoxarifado, reduzindo a nec
 
 A retirada de um material somente é permitida quando:
 
-* o estoque atual é um número válido;
-* a quantidade retirada é um número inteiro;
+* o estoque atual representa um número válido;
+* a quantidade retirada representa um número inteiro;
 * a quantidade retirada é maior que zero;
 * a quantidade retirada é menor ou igual ao estoque disponível;
 * a operação não resulta em estoque negativo.
@@ -55,13 +58,41 @@ validarRetirada(10, 0);  // false
 validarRetirada(10, -2); // false
 ```
 
-## Operações da API
+A função também aceita valores numéricos recebidos como texto:
 
-O aplicativo utiliza o seguinte endpoint:
+```js
+validarRetirada("10", "4"); // true
+```
+
+## Tecnologias utilizadas
+
+* React Native;
+* Expo;
+* JavaScript;
+* MockAPI;
+* Fetch API;
+* Jest;
+* Git;
+* GitHub.
+
+## API utilizada
+
+Endpoint de materiais:
 
 ```text
 https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais
 ```
+
+### Estrutura básica de um material
+
+```json
+{
+  "nome": "Luva de procedimento",
+  "quantidadeAtual": 100
+}
+```
+
+## Operações da API
 
 ### Buscar materiais
 
@@ -69,9 +100,9 @@ https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais
 GET /materiais
 ```
 
-Busca todos os materiais cadastrados e preenche o inventário.
+Busca todos os materiais cadastrados e preenche o inventário exibido na aplicação.
 
-### Cadastrar material
+### Cadastrar um material
 
 ```http
 POST /materiais
@@ -102,7 +133,7 @@ Quantidade retirada: 20
 Novo estoque: 80
 ```
 
-Corpo enviado:
+Exemplo do corpo enviado:
 
 ```json
 {
@@ -111,13 +142,15 @@ Corpo enviado:
 }
 ```
 
-### Excluir material
+### Excluir um material
 
 ```http
 DELETE /materiais/:id
 ```
 
 Remove permanentemente o material selecionado da MockAPI.
+
+Depois da confirmação da API, o registro também é removido da lista exibida no aplicativo.
 
 ## Identificadores obrigatórios
 
@@ -140,19 +173,7 @@ Remove permanentemente o material selecionado da MockAPI.
 
 ## Testes unitários
 
-Os testes verificam a regra de negócio da função `validarRetirada`.
-
-Para executar todos os testes:
-
-```bash
-npm test
-```
-
-Para executar somente o teste da retirada:
-
-```bash
-npm test -- validarRetirada.test.js
-```
+Os testes unitários verificam as regras da função pura `validarRetirada`.
 
 O arquivo de teste está localizado em:
 
@@ -163,75 +184,43 @@ __tests__/validarRetirada.test.js
 Os testes verificam:
 
 * retirada menor que o estoque;
-* retirada de todo o estoque;
+* retirada de todo o estoque disponível;
 * valores numéricos recebidos como texto;
 * retirada superior ao estoque;
 * quantidade negativa;
 * retirada igual a zero;
-* valor decimal;
+* quantidade decimal;
 * texto que não representa um número;
-* estoque zerado;
-* estoque atual negativo.
+* retirada quando o estoque está zerado;
+* utilização de estoque atual negativo.
 
-## Estrutura principal do projeto
+Para executar todos os testes:
 
-```text
-almoxarifado-enfermagem/
-├── __tests__/
-│   └── validarRetirada.test.js
-├── App.js
-├── README.md
-├── package.json
-└── package-lock.json
+```bash
+npm test
 ```
 
+Para executar os testes sequencialmente:
 
-## Tecnologias utilizadas
-
-* React Native;
-* Expo;
-* JavaScript;
-* MockAPI;
-* Fetch API;
-* Git e GitHub.
-
-## API utilizada
-
-Endpoint de materiais:
-
-```text
-https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais
+```bash
+npm test -- --runInBand
 ```
 
-### Estrutura básica de um material
+Para executar somente o teste da retirada:
 
-```json
-{
-  "nome": "Luva de procedimento",
-  "quantidadeAtual": 100
-}
+```bash
+npm test -- validarRetirada.test.js
 ```
-
-## Identificadores obrigatórios da interface
-
-O projeto utiliza os identificadores solicitados para os componentes principais:
-
-| Componente                | Identificador               |
-| ------------------------- | --------------------------- |
-| Campo do nome do material | `testID="input-nome"`       |
-| Campo da quantidade       | `testID="input-quantidade"` |
-| Botão de cadastro         | `testID="btn-cadastrar"`    |
-| Lista de materiais        | `testID="lista-materiais"`  |
 
 ## Como executar o projeto
 
 ### Pré-requisitos
 
-Antes de iniciar, instale:
+Antes de iniciar, é necessário instalar:
 
 * Node.js;
 * npm;
-* aplicativo Expo Go no celular ou um emulador Android/iOS.
+* aplicativo Expo Go em um dispositivo móvel ou um emulador Android/iOS.
 
 ### Instalação
 
@@ -259,7 +248,25 @@ Inicie o servidor de desenvolvimento:
 npx expo start
 ```
 
-Depois, escaneie o QR Code exibido no terminal com o aplicativo Expo Go.
+Depois, escaneie o QR Code exibido no terminal utilizando o aplicativo Expo Go.
+
+Para iniciar o projeto limpando o cache:
+
+```bash
+npx expo start -c
+```
+
+## Estrutura principal do projeto
+
+```text
+almoxarifado-enfermagem/
+├── __tests__/
+│   └── validarRetirada.test.js
+├── App.js
+├── README.md
+├── package.json
+└── package-lock.json
+```
 
 ## Próximas etapas planejadas
 
