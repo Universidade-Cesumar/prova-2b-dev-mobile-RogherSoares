@@ -445,6 +445,18 @@ export default function App() {
         autoCapitalize="sentences"
       />
 
+      <Text style={styles.label}>Data de validade</Text>
+
+      <TextInput
+        testID="input-validade"
+        style={styles.input}
+        placeholder="Ex.: 2027-12-30"
+        value={validade}
+        onChangeText={setValidade}
+        keyboardType="numeric"
+        maxLength={10}
+      />
+
       <TouchableOpacity
         testID="btn-cadastrar"
         style={[styles.button, cadastrando && styles.buttonDisabled]}
