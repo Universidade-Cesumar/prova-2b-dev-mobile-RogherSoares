@@ -434,6 +434,17 @@ export default function App() {
         autoCapitalize="sentences"
       />
 
+      <Text style={styles.label}>Localização</Text>
+
+      <TextInput
+        testID="input-localizacao"
+        style={styles.input}
+        placeholder="Ex.: Armário A - Prateleira 2"
+        value={localizacao}
+        onChangeText={setLocalizacao}
+        autoCapitalize="sentences"
+      />
+
       <TouchableOpacity
         testID="btn-cadastrar"
         style={[styles.button, cadastrando && styles.buttonDisabled]}
