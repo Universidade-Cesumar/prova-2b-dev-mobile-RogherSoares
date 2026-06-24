@@ -63,6 +63,14 @@ function formatarDataValidade(dataInformada) {
   });
 }
 
+function normalizarTexto(valor) {
+  return String(valor ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 export default function App() {
   // --- Estados da Aplicação ---
   const [nome, setNome] = useState("");
@@ -449,14 +457,24 @@ export default function App() {
     buscarMateriais();
   }, []);
 
+  const textoBuscado = normalizarTexto(busca);
+
   const materiaisFiltrados = materiais.filter((material) => {
-    const nomeMaterial = String(
-      material.nome || material.name || "",
-    ).toLowerCase();
+    if (!textoBuscado) {
+      return true;
+    }
 
-    const textoBuscado = busca.trim().toLowerCase();
+    const camposPesquisaveis = [
+      material.nome || material.name,
+      material.categoria,
+      material.unidadeMedida,
+      material.localizacao,
+      material.observacao,
+    ];
 
-    return nomeMaterial.includes(textoBuscado);
+    return camposPesquisaveis.some((campo) =>
+      normalizarTexto(campo).includes(textoBuscado),
+    );
   });
 
   const cabecalhoLista = (
@@ -565,7 +583,7 @@ export default function App() {
       <TextInput
         testID="input-busca"
         style={styles.searchInput}
-        placeholder="Pesquisar material..."
+        placeholder="Pesquisar por nome, categoria ou localização..."
         value={busca}
         onChangeText={setBusca}
       />
