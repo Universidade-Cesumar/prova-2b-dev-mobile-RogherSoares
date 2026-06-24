@@ -62,7 +62,6 @@ export default function App() {
   const [erroConexao, setErroConexao] = useState(null);
   const [categoria, setCategoria] = useState("");
   const [unidadeMedida, setUnidadeMedida] = useState("");
-  const [estoqueMinimo, setEstoqueMinimo] = useState("");
   const [localizacao, setLocalizacao] = useState("");
   const [validade, setValidade] = useState("");
   const [observacao, setObservacao] = useState("");
@@ -141,7 +140,6 @@ export default function App() {
     const observacaoTratada = observacao.trim();
 
     const quantidadeNumerica = Number(quantidade);
-    const estoqueMinimoNumerico = Number(estoqueMinimo);
 
     if (!nomeTratado) {
       exibirAlerta("Atenção", "Informe o nome do material.");
@@ -176,21 +174,6 @@ export default function App() {
       return null;
     }
 
-    if (!estoqueMinimo.trim()) {
-      exibirAlerta("Atenção", "Informe o estoque mínimo.");
-
-      return null;
-    }
-
-    if (!Number.isInteger(estoqueMinimoNumerico) || estoqueMinimoNumerico < 0) {
-      exibirAlerta(
-        "Atenção",
-        "O estoque mínimo deve ser um número inteiro igual ou maior que zero.",
-      );
-
-      return null;
-    }
-
     if (!localizacaoTratada) {
       exibirAlerta("Atenção", "Informe a localização do material.");
 
@@ -212,7 +195,6 @@ export default function App() {
       categoria: categoriaTratada,
       unidadeMedida: unidadeMedidaTratada,
       quantidadeAtual: quantidadeNumerica,
-      estoqueMinimo: estoqueMinimoNumerico,
       localizacao: localizacaoTratada,
       validade: validadeTratada ? `${validadeTratada}T12:00:00.000Z` : "",
       observacao: observacaoTratada,
@@ -253,7 +235,6 @@ export default function App() {
       setQuantidade("");
       setCategoria("");
       setUnidadeMedida("");
-      setEstoqueMinimo("");
       setLocalizacao("");
       setValidade("");
       setObservacao("");
