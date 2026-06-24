@@ -30,13 +30,13 @@ export function validarRetirada(estoqueAtual, quantidadeRetirada) {
 }
 
 function validarData(dataInformada) {
-  const formatoCorreto = /^\d{4}-\d{2}-\d{2}$/.test(dataInformada);
+  const formatoCorreto = /^\d{2}-\d{2}-\d{4}$/.test(dataInformada);
 
   if (!formatoCorreto) {
     return false;
   }
 
-  const [ano, mes, dia] = dataInformada.split("-").map(Number);
+  const [dia, mes, ano] = dataInformada.split("-").map(Number);
 
   const data = new Date(Date.UTC(ano, mes - 1, dia));
 
@@ -45,6 +45,12 @@ function validarData(dataInformada) {
     data.getUTCMonth() === mes - 1 &&
     data.getUTCDate() === dia
   );
+}
+
+function converterDataParaIso(dataInformada) {
+  const [dia, mes, ano] = dataInformada.split("-");
+
+  return `${ano}-${mes}-${dia}T12:00:00.000Z`;
 }
 
 function formatarDataValidade(dataInformada) {
@@ -61,6 +67,23 @@ function formatarDataValidade(dataInformada) {
   return data.toLocaleDateString("pt-BR", {
     timeZone: "UTC",
   });
+}
+
+function formatarEntradaData(texto) {
+  const apenasNumeros = texto.replace(/\D/g, "").slice(0, 8);
+
+  if (apenasNumeros.length <= 2) {
+    return apenasNumeros;
+  }
+
+  if (apenasNumeros.length <= 4) {
+    return `${apenasNumeros.slice(0, 2)}-${apenasNumeros.slice(2)}`;
+  }
+
+  return `${apenasNumeros.slice(0, 2)}-${apenasNumeros.slice(
+    2,
+    4,
+  )}-${apenasNumeros.slice(4)}`;
 }
 
 function normalizarTexto(valor) {
@@ -207,7 +230,7 @@ export default function App() {
     if (validadeTratada && !validarData(validadeTratada)) {
       exibirAlerta(
         "Data inválida",
-        "Informe uma data válida no formato AAAA-MM-DD.",
+        "Informe uma data válida no formato DD-MM-AAAA.",
       );
 
       return null;
@@ -220,7 +243,7 @@ export default function App() {
       unidadeMedida: unidadeMedidaTratada,
       quantidadeAtual: quantidadeNumerica,
       localizacao: localizacaoTratada,
-      validade: validadeTratada ? `${validadeTratada}T12:00:00.000Z` : "",
+      validade: validadeTratada ? converterDataParaIso(validadeTratada) : "",
       observacao: observacaoTratada,
     };
   };
@@ -545,9 +568,10 @@ export default function App() {
       <TextInput
         testID="input-validade"
         style={styles.input}
-        placeholder="Ex.: 2027-12-30"
+        placeholder="Ex.: 30-12-2027"
         value={validade}
-        onChangeText={setValidade}
+        onChangeText={(texto) => setValidade(formatarEntradaData(texto))}
+        keyboardType="numeric"
         maxLength={10}
       />
 
