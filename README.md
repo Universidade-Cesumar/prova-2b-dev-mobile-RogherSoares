@@ -1,38 +1,92 @@
 # Almoxarifado - Enfermagem
 
-Aplicativo mobile desenvolvido para modernizar o controle dos materiais utilizados no almoxarifado das atividades práticas do curso de Enfermagem.
+Aplicação multiplataforma desenvolvida com React Native e Expo para modernizar o controle dos materiais utilizados no almoxarifado das atividades práticas do curso de Enfermagem.
 
-O sistema permite consultar o inventário, cadastrar novos materiais, registrar baixas no estoque e excluir registros. Os dados são armazenados em uma API simulada criada com a plataforma MockAPI.
+O sistema permite consultar o inventário, cadastrar materiais, pesquisar registros, realizar baixas no estoque e excluir itens. Os dados são armazenados em uma API simulada criada por meio da plataforma MockAPI.
+
+A aplicação pode ser executada em dispositivos móveis com o Expo Go e também em navegadores por meio do Expo Web.
 
 ## Objetivo
 
 Facilitar o registro e o controle dos materiais disponíveis no almoxarifado, reduzindo a necessidade de anotações em papel e atualizações manuais em planilhas.
 
-O aplicativo busca oferecer uma alternativa simples e acessível para acompanhar o estoque diretamente por dispositivos móveis.
+A aplicação oferece uma alternativa simples, acessível e intuitiva para acompanhar o estoque, localizar materiais e registrar movimentações diretamente por dispositivos móveis ou navegadores.
 
 ## Funcionalidades implementadas
 
-* Cadastro de materiais com nome e quantidade;
-* Validação dos campos do formulário;
-* Consulta automática dos materiais ao abrir o aplicativo;
+* Cadastro de materiais;
+* Validação dos campos obrigatórios;
+* Cadastro do nome do material;
+* Cadastro da quantidade disponível;
+* Cadastro da categoria;
+* Cadastro da unidade de medida;
+* Cadastro da localização;
+* Cadastro opcional da data de validade;
+* Cadastro opcional de observações;
+* Formatação automática da validade no padrão `DD-MM-AAAA`;
+* Conversão da validade para o formato ISO antes do envio à API;
+* Consulta automática dos materiais ao iniciar a aplicação;
 * Exibição dinâmica do inventário em uma lista;
 * Atualização manual da lista ao puxá-la para baixo;
 * Indicadores visuais durante as requisições;
-* Bloqueio de cadastros duplicados;
 * Limpeza automática do formulário após o cadastro;
+* Pesquisa de materiais em tempo real;
+* Pesquisa por nome, categoria, unidade de medida, localização ou observação;
+* Pesquisa sem diferenciação entre letras maiúsculas, minúsculas e acentos;
+* Totalizador de materiais encontrados;
+* Destaque visual para materiais com estoque crítico;
+* Exibição da quantidade disponível em um card de destaque;
 * Baixa rápida de materiais diretamente pela lista;
 * Validação da quantidade retirada;
-* Bloqueio de retiradas iguais a zero, negativas ou superiores ao estoque;
+* Bloqueio de retiradas iguais a zero;
+* Bloqueio de retiradas negativas;
+* Bloqueio de retiradas decimais;
+* Bloqueio de retiradas superiores ao estoque disponível;
 * Atualização do estoque na MockAPI utilizando requisição `PUT`;
 * Atualização imediata da quantidade exibida na interface;
 * Exclusão de materiais com confirmação do usuário;
-* Exclusão permanente dos registros por meio de requisição `DELETE`;
+* Exclusão permanente dos registros utilizando requisição `DELETE`;
 * Atualização automática da lista depois de uma exclusão;
 * Bloqueio de ações duplicadas durante as requisições;
-* Testes unitários da função `validarRetirada` com Jest;
-* Tratamento básico de erros de comunicação com a API.
+* Tratamento de falhas de comunicação com a API;
+* Mensagens amigáveis de erro;
+* Botão para tentar carregar os materiais novamente;
+* Interface responsiva para Web e dispositivos móveis;
+* Testes unitários da função `validarRetirada` utilizando Jest.
 
-## Regras de negócio da retirada
+## Regras de negócio
+
+### Cadastro de materiais
+
+Para cadastrar um material, devem ser informados:
+
+* nome do material;
+* quantidade atual;
+* categoria;
+* unidade de medida;
+* localização.
+
+A quantidade deve ser um número inteiro maior que zero.
+
+A data de validade e a observação são opcionais. Quando informada, a data deve seguir o formato:
+
+```text
+DD-MM-AAAA
+```
+
+Exemplo:
+
+```text
+30-12-2027
+```
+
+Antes do envio à API, a data é convertida para o padrão ISO:
+
+```text
+2027-12-30T12:00:00.000Z
+```
+
+### Retirada de materiais
 
 A retirada de um material somente é permitida quando:
 
@@ -42,7 +96,7 @@ A retirada de um material somente é permitida quando:
 * a quantidade retirada é menor ou igual ao estoque disponível;
 * a operação não resulta em estoque negativo.
 
-A validação é realizada por uma função pura exportada:
+A validação é realizada pela função pura exportada:
 
 ```js
 validarRetirada(estoqueAtual, quantidadeRetirada)
@@ -64,10 +118,31 @@ A função também aceita valores numéricos recebidos como texto:
 validarRetirada("10", "4"); // true
 ```
 
+### Estoque crítico
+
+Um material é considerado em situação crítica quando sua quantidade disponível é menor que 10:
+
+```js
+Number(item.quantidadeAtual) < 10
+```
+
+Exemplos:
+
+| Quantidade disponível | Situação        |
+| --------------------: | --------------- |
+|                     0 | Estoque crítico |
+|                     5 | Estoque crítico |
+|                     9 | Estoque crítico |
+|                    10 | Estoque normal  |
+|                   100 | Estoque normal  |
+
+Quando o estoque está crítico, o cartão do material recebe destaque visual em vermelho e apresenta uma mensagem de alerta.
+
 ## Tecnologias utilizadas
 
 * React Native;
 * Expo;
+* Expo Web;
 * JavaScript;
 * MockAPI;
 * Fetch API;
@@ -77,20 +152,29 @@ validarRetirada("10", "4"); // true
 
 ## API utilizada
 
-Endpoint de materiais:
+Endpoint utilizado para o gerenciamento dos materiais:
 
 ```text
 https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais
 ```
 
-### Estrutura básica de um material
+### Estrutura de um material
 
 ```json
 {
+  "createdAt": "2026-06-24T12:00:00.000Z",
   "nome": "Luva de procedimento",
-  "quantidadeAtual": 100
+  "categoria": "EPI",
+  "unidadeMedida": "Caixa",
+  "quantidadeAtual": 100,
+  "localizacao": "Armário A - Prateleira 2",
+  "validade": "2027-12-30T12:00:00.000Z",
+  "observacao": "Manter em local seco",
+  "id": "1"
 }
 ```
+
+O campo `id` é gerado automaticamente pela MockAPI.
 
 ## Operações da API
 
@@ -100,7 +184,7 @@ https://6a18c6de23c3626470ac0536.mockapi.io/api/v1/materiais
 GET /materiais
 ```
 
-Busca todos os materiais cadastrados e preenche o inventário exibido na aplicação.
+Busca todos os materiais cadastrados e preenche o inventário exibido pela aplicação.
 
 ### Cadastrar um material
 
@@ -112,8 +196,14 @@ Exemplo do corpo enviado:
 
 ```json
 {
+  "createdAt": "2026-06-24T12:00:00.000Z",
   "nome": "Luva de procedimento",
-  "quantidadeAtual": 100
+  "categoria": "EPI",
+  "unidadeMedida": "Caixa",
+  "quantidadeAtual": 100,
+  "localizacao": "Armário A - Prateleira 2",
+  "validade": "2027-12-30T12:00:00.000Z",
+  "observacao": "Manter em local seco"
 }
 ```
 
@@ -123,7 +213,7 @@ Exemplo do corpo enviado:
 PUT /materiais/:id
 ```
 
-Atualiza o material selecionado com a nova quantidade calculada.
+Atualiza o registro selecionado com a nova quantidade calculada.
 
 Exemplo:
 
@@ -133,12 +223,17 @@ Quantidade retirada: 20
 Novo estoque: 80
 ```
 
-Exemplo do corpo enviado:
+Exemplo do material atualizado:
 
 ```json
 {
   "nome": "Luva de procedimento",
-  "quantidadeAtual": 80
+  "categoria": "EPI",
+  "unidadeMedida": "Caixa",
+  "quantidadeAtual": 80,
+  "localizacao": "Armário A - Prateleira 2",
+  "validade": "2027-12-30T12:00:00.000Z",
+  "observacao": "Manter em local seco"
 }
 ```
 
@@ -150,7 +245,33 @@ DELETE /materiais/:id
 
 Remove permanentemente o material selecionado da MockAPI.
 
-Depois da confirmação da API, o registro também é removido da lista exibida no aplicativo.
+Antes da exclusão, o sistema solicita a confirmação do usuário. Depois da resposta positiva da API, o registro também é removido da lista exibida na aplicação.
+
+## Pesquisa de materiais
+
+A pesquisa é realizada em tempo real e permite localizar registros pelos seguintes dados:
+
+* nome;
+* categoria;
+* unidade de medida;
+* localização;
+* observação.
+
+A pesquisa ignora letras maiúsculas, minúsculas e acentos.
+
+Por exemplo, uma pesquisa pelo termo:
+
+```text
+armario
+```
+
+também encontra um material localizado em:
+
+```text
+Armário A - Prateleira 2
+```
+
+O totalizador é atualizado automaticamente de acordo com a quantidade de resultados encontrados.
 
 ## Identificadores obrigatórios
 
@@ -171,13 +292,21 @@ Depois da confirmação da API, o registro também é removido da lista exibida 
 | Botão de baixa               | `testID="btn-baixar"`     |
 | Botão de exclusão            | `testID="btn-excluir"`    |
 
+### Sprint 3
+
+| Componente                   | Identificador                          |
+| ---------------------------- | -------------------------------------- |
+| Campo de pesquisa            | `testID="input-busca"`                 |
+| Totalizador de materiais     | `testID="total-itens"`                 |
+| Material com estoque crítico | `accessibilityLabel="estoque-critico"` |
+
 ## Demonstração do sistema
 
-Nesta seção são apresentadas as principais telas e funcionalidades do sistema mobile de controle de materiais do almoxarifado do curso de Enfermagem.
+Nesta seção são apresentadas as principais telas e funcionalidades do sistema de controle de materiais do almoxarifado do curso de Enfermagem.
 
 ### Tela inicial
 
-A tela inicial apresenta a identificação do sistema e o formulário utilizado para cadastrar novos materiais no estoque.
+A tela inicial apresenta a identificação do sistema e o formulário utilizado para cadastrar novos materiais.
 
 <p align="center">
   <img
@@ -189,7 +318,7 @@ A tela inicial apresenta a identificação do sistema e o formulário utilizado 
 
 ### Cadastro de material
 
-O formulário permite registrar o nome do material, quantidade disponível, categoria, unidade de medida, localização, data de validade e uma observação opcional.
+O formulário permite registrar nome, quantidade, categoria, unidade de medida, localização, data de validade e uma observação opcional.
 
 <p align="center">
   <img
@@ -201,7 +330,7 @@ O formulário permite registrar o nome do material, quantidade disponível, cate
 
 ### Lista de materiais cadastrados
 
-Os materiais recuperados da API são apresentados em cartões. Cada cartão mostra as informações do item e destaca a quantidade disponível no canto direito.
+Os materiais recuperados da API são apresentados em cartões. Cada cartão exibe os dados do material e destaca a quantidade disponível no canto direito.
 
 <p align="center">
   <img
@@ -213,7 +342,7 @@ Os materiais recuperados da API são apresentados em cartões. Cada cartão most
 
 ### Pesquisa em tempo real
 
-O campo de pesquisa permite localizar materiais por nome, categoria, unidade de medida, localização ou observação. O totalizador é atualizado automaticamente de acordo com o resultado da pesquisa.
+O campo de pesquisa permite localizar materiais por nome, categoria, unidade de medida, localização ou observação. O totalizador é atualizado automaticamente.
 
 <p align="center">
   <img
@@ -225,7 +354,7 @@ O campo de pesquisa permite localizar materiais por nome, categoria, unidade de 
 
 ### Alerta de estoque crítico
 
-Quando a quantidade disponível é menor que 10 unidades, o cartão recebe um destaque visual em vermelho e apresenta o aviso de estoque crítico.
+Quando a quantidade disponível é menor que 10, o cartão recebe destaque visual em vermelho e apresenta o aviso de estoque crítico.
 
 <p align="center">
   <img
@@ -235,12 +364,11 @@ Quando a quantidade disponível é menor que 10 unidades, o cartão recebe um de
   />
 </p>
 
-
 ## Testes unitários
 
 Os testes unitários verificam as regras da função pura `validarRetirada`.
 
-O arquivo de teste está localizado em:
+O arquivo de testes está localizado em:
 
 ```text
 __tests__/validarRetirada.test.js
@@ -285,7 +413,7 @@ Antes de iniciar, é necessário instalar:
 
 * Node.js;
 * npm;
-* aplicativo Expo Go em um dispositivo móvel ou um emulador Android/iOS.
+* Expo Go em um dispositivo móvel ou um emulador Android/iOS.
 
 ### Instalação
 
@@ -313,7 +441,23 @@ Inicie o servidor de desenvolvimento:
 npx expo start
 ```
 
-Depois, escaneie o QR Code exibido no terminal utilizando o aplicativo Expo Go.
+Depois, escaneie o QR Code exibido no terminal utilizando o Expo Go.
+
+### Executar no navegador
+
+Com o servidor do Expo aberto, pressione:
+
+```text
+w
+```
+
+Também é possível executar diretamente com:
+
+```bash
+npx expo start --web
+```
+
+### Limpar o cache
 
 Para iniciar o projeto limpando o cache:
 
@@ -327,23 +471,44 @@ npx expo start -c
 almoxarifado-enfermagem/
 ├── __tests__/
 │   └── validarRetirada.test.js
+├── assets/
+│   └── screenshots/
+│       ├── tela-inicial-web.png
+│       ├── formulario-cadastro.png
+│       ├── lista-materiais.png
+│       ├── pesquisa-material.png
+│       └── estoque-critico.png
 ├── App.js
 ├── README.md
+├── app.json
 ├── package.json
 └── package-lock.json
 ```
 
+## Tratamento de erros
+
+As operações de consulta, cadastro, baixa e exclusão são protegidas por blocos `try/catch`.
+
+Quando uma falha de comunicação acontece, a aplicação:
+
+* registra o erro técnico no console;
+* apresenta uma mensagem amigável ao usuário;
+* evita a exibição direta de mensagens técnicas;
+* disponibiliza uma nova tentativa de carregamento;
+* encerra corretamente os indicadores de carregamento.
+
 ## Próximas etapas planejadas
 
-* Registro detalhado das movimentações;
-* Identificação do instrutor solicitante;
-* Separação dos materiais por categorias;
-* Controle de data de validade;
-* Alertas para materiais zerados;
+* Registro detalhado do histórico de movimentações;
+* Identificação do instrutor responsável por cada retirada;
 * Alertas de validade próxima;
+* Filtro específico por categoria;
+* Registro de entradas de materiais;
+* Relatórios de entradas e saídas;
+* Exportação do inventário;
 * Estratégia de funcionamento temporário sem internet;
-* Relatórios de entradas e saídas.
+* Controle de diferentes níveis de acesso.
 
 ## Autor
 
-Projeto acadêmico desenvolvido por Rogher Adriano Soares.
+Projeto acadêmico desenvolvido por **Rogher Adriano Soares**.
