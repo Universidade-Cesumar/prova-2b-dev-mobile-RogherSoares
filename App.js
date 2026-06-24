@@ -502,134 +502,176 @@ export default function App() {
 
   const cabecalhoLista = (
     <View>
-      <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
+      <View style={styles.heroCard}>
+        <Text style={styles.heroIcon}>🏥</Text>
 
-      <Text style={styles.description}>
-        Controle mobile de materiais do almoxarifado. Consulte o inventário
-        atualizado e cadastre novos insumos de forma rápida e segura.
-      </Text>
+        <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
 
-      <Text style={styles.label}>Nome do material</Text>
+        <Text style={styles.description}>
+          Controle de materiais do almoxarifado com cadastro, consulta, baixa de
+          estoque e alerta para itens críticos.
+        </Text>
+      </View>
 
-      <TextInput
-        testID="input-nome"
-        style={styles.input}
-        placeholder="Ex.: Luva de procedimento"
-        value={nome}
-        onChangeText={setNome}
-      />
-
-      <Text style={styles.label}>Quantidade</Text>
-
-      <TextInput
-        testID="input-quantidade"
-        style={styles.input}
-        placeholder="Ex.: 100"
-        value={quantidade}
-        onChangeText={setQuantidade}
-        keyboardType="numeric"
-      />
-
-      <Text style={styles.label}>Categoria</Text>
-
-      <TextInput
-        testID="input-categoria"
-        style={styles.input}
-        placeholder="Ex.: Material de consumo"
-        value={categoria}
-        onChangeText={setCategoria}
-        autoCapitalize="sentences"
-      />
-
-      <Text style={styles.label}>Unidade de medida</Text>
-
-      <TextInput
-        testID="input-unidade-medida"
-        style={styles.input}
-        placeholder="Ex.: Caixa, unidade, pacote"
-        value={unidadeMedida}
-        onChangeText={setUnidadeMedida}
-        autoCapitalize="sentences"
-      />
-
-      <Text style={styles.label}>Localização</Text>
-
-      <TextInput
-        testID="input-localizacao"
-        style={styles.input}
-        placeholder="Ex.: Armário A - Prateleira 2"
-        value={localizacao}
-        onChangeText={setLocalizacao}
-        autoCapitalize="sentences"
-      />
-
-      <Text style={styles.label}>Data de validade</Text>
-
-      <TextInput
-        testID="input-validade"
-        style={styles.input}
-        placeholder="Ex.: 30-12-2027"
-        value={validade}
-        onChangeText={(texto) => setValidade(formatarEntradaData(texto))}
-        keyboardType="numeric"
-        maxLength={10}
-      />
-
-      <Text style={styles.label}>Observação</Text>
-
-      <TextInput
-        testID="input-observacao"
-        style={[styles.input, styles.observationInput]}
-        placeholder="Ex.: Manter em local seco"
-        value={observacao}
-        onChangeText={setObservacao}
-        multiline
-        numberOfLines={4}
-        textAlignVertical="top"
-        maxLength={300}
-      />
-
-      <TouchableOpacity
-        testID="btn-cadastrar"
-        style={[styles.button, cadastrando && styles.buttonDisabled]}
-        onPress={cadastrarMaterial}
-        disabled={cadastrando}
-      >
-        {cadastrando ? (
-          <ActivityIndicator size="small" color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Cadastrar material</Text>
-        )}
-      </TouchableOpacity>
-
-      <Text style={styles.sectionTitle}>Materiais cadastrados</Text>
-
-      <TextInput
-        testID="input-busca"
-        style={styles.searchInput}
-        placeholder="Pesquisar por nome, categoria ou localização..."
-        value={busca}
-        onChangeText={setBusca}
-      />
-
-      <Text testID="total-itens" style={styles.totalItems}>
-        {materiaisFiltrados.length === 1
-          ? "1 material encontrado"
-          : `${materiaisFiltrados.length} materiais encontrados`}
-      </Text>
-
-      {erroConexao && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{erroConexao}</Text>
-
-          <TouchableOpacity
-            style={styles.retryButton}
-            onPress={() => buscarMateriais()}
-          >
-            <Text style={styles.retryButtonText}>Tentar novamente</Text>
-          </TouchableOpacity>
+      <View style={styles.formCard}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionIcon}>➕</Text>
+          <View>
+            <Text style={styles.formTitle}>Cadastrar material</Text>
+            <Text style={styles.formSubtitle}>
+              Preencha os dados principais do item
+            </Text>
+          </View>
         </View>
-      )}
+
+        <View style={styles.formGrid}>
+          <View style={styles.formField}>
+            <Text style={styles.label}>📦 Nome do material</Text>
+
+            <TextInput
+              testID="input-nome"
+              style={styles.input}
+              placeholder="Ex.: Luva de procedimento"
+              value={nome}
+              onChangeText={setNome}
+            />
+          </View>
+
+          <View style={[styles.formField, styles.formFieldSmall]}>
+            <Text style={styles.label}>🔢 Quantidade</Text>
+
+            <TextInput
+              testID="input-quantidade"
+              style={styles.input}
+              placeholder="Ex.: 100"
+              value={quantidade}
+              onChangeText={setQuantidade}
+              keyboardType="numeric"
+            />
+          </View>
+
+          <View style={styles.formField}>
+            <Text style={styles.label}>🏷️ Categoria</Text>
+
+            <TextInput
+              testID="input-categoria"
+              style={styles.input}
+              placeholder="Ex.: Material de consumo"
+              value={categoria}
+              onChangeText={setCategoria}
+              autoCapitalize="sentences"
+            />
+          </View>
+
+          <View style={[styles.formField, styles.formFieldSmall]}>
+            <Text style={styles.label}>📏 Unidade</Text>
+
+            <TextInput
+              testID="input-unidade-medida"
+              style={styles.input}
+              placeholder="Ex.: Caixa"
+              value={unidadeMedida}
+              onChangeText={setUnidadeMedida}
+              autoCapitalize="sentences"
+            />
+          </View>
+
+          <View style={styles.formField}>
+            <Text style={styles.label}>📍 Localização</Text>
+
+            <TextInput
+              testID="input-localizacao"
+              style={styles.input}
+              placeholder="Ex.: Armário A - Prateleira 2"
+              value={localizacao}
+              onChangeText={setLocalizacao}
+              autoCapitalize="sentences"
+            />
+          </View>
+
+          <View style={[styles.formField, styles.formFieldSmall]}>
+            <Text style={styles.label}>📅 Validade</Text>
+
+            <TextInput
+              testID="input-validade"
+              style={styles.input}
+              placeholder="Ex.: 30-12-2027"
+              value={validade}
+              onChangeText={(texto) => setValidade(formatarEntradaData(texto))}
+              keyboardType="numeric"
+              maxLength={10}
+            />
+          </View>
+
+          <View style={[styles.formField, styles.formFieldFull]}>
+            <Text style={styles.label}>📝 Observação</Text>
+
+            <TextInput
+              testID="input-observacao"
+              style={[styles.input, styles.observationInput]}
+              placeholder="Ex.: Manter em local seco"
+              value={observacao}
+              onChangeText={setObservacao}
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+              maxLength={300}
+            />
+          </View>
+        </View>
+
+        <TouchableOpacity
+          testID="btn-cadastrar"
+          style={[styles.button, cadastrando && styles.buttonDisabled]}
+          onPress={cadastrarMaterial}
+          disabled={cadastrando}
+        >
+          {cadastrando ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>✅ Cadastrar material</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.searchCard}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionIcon}>🔎</Text>
+          <View>
+            <Text style={styles.sectionTitle}>Materiais cadastrados</Text>
+            <Text style={styles.formSubtitle}>
+              Consulte os itens disponíveis no estoque
+            </Text>
+          </View>
+        </View>
+
+        <TextInput
+          testID="input-busca"
+          style={styles.searchInput}
+          placeholder="Pesquisar por nome, categoria ou localização..."
+          value={busca}
+          onChangeText={setBusca}
+        />
+
+        <Text testID="total-itens" style={styles.totalItems}>
+          {materiaisFiltrados.length === 1
+            ? "1 material encontrado"
+            : `${materiaisFiltrados.length} materiais encontrados`}
+        </Text>
+
+        {erroConexao && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{erroConexao}</Text>
+
+            <TouchableOpacity
+              style={styles.retryButton}
+              onPress={() => buscarMateriais()}
+            >
+              <Text style={styles.retryButtonText}>Tentar novamente</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </View>
   );
 
@@ -660,48 +702,93 @@ export default function App() {
                 estoqueCritico ? "estoque-critico" : undefined
               }
             >
-              <Text style={styles.materialName}>{item.nome || item.name}</Text>
+              <View style={styles.materialHeader}>
+                <View style={styles.materialTitleArea}>
+                  <Text style={styles.materialIcon}>
+                    {estoqueCritico ? "⚠️" : "📦"}
+                  </Text>
 
-              <Text style={styles.materialQuantity}>
-                Quantidade disponível: {item.quantidadeAtual}
-              </Text>
+                  <View style={styles.materialTitleText}>
+                    <Text style={styles.materialName}>
+                      {item.nome || item.name}
+                    </Text>
+
+                    <Text style={styles.materialSubtitle}>
+                      {item.categoria || "Categoria não informada"}
+                    </Text>
+                  </View>
+                </View>
+
+                <View
+                  style={[
+                    styles.stockCard,
+                    estoqueCritico && styles.stockCardCritical,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.stockNumber,
+                      estoqueCritico && styles.stockNumberCritical,
+                    ]}
+                  >
+                    {item.quantidadeAtual}
+                  </Text>
+
+                  <Text
+                    style={[
+                      styles.stockLabel,
+                      estoqueCritico && styles.stockLabelCritical,
+                    ]}
+                  >
+                    em estoque
+                  </Text>
+                </View>
+              </View>
 
               {estoqueCritico && (
-                <Text style={styles.criticalText}>Estoque crítico</Text>
+                <View style={styles.criticalBadge}>
+                  <Text style={styles.criticalBadgeText}>
+                    ⚠️ Estoque crítico
+                  </Text>
+                </View>
               )}
 
               <View style={styles.materialDetails}>
                 <Text style={styles.materialDetail}>
-                  <Text style={styles.materialDetailLabel}>Categoria: </Text>
+                  <Text style={styles.materialDetailLabel}>🏷️ Categoria: </Text>
                   {item.categoria || "Não informada"}
                 </Text>
 
                 <Text style={styles.materialDetail}>
                   <Text style={styles.materialDetailLabel}>
-                    Unidade de medida:{" "}
+                    📏 Unidade de medida:{" "}
                   </Text>
                   {item.unidadeMedida || "Não informada"}
                 </Text>
 
                 <Text style={styles.materialDetail}>
-                  <Text style={styles.materialDetailLabel}>Localização: </Text>
+                  <Text style={styles.materialDetailLabel}>
+                    📍 Localização:{" "}
+                  </Text>
                   {item.localizacao || "Não informada"}
                 </Text>
 
                 <Text style={styles.materialDetail}>
-                  <Text style={styles.materialDetailLabel}>Validade: </Text>
+                  <Text style={styles.materialDetailLabel}>📅 Validade: </Text>
                   {formatarDataValidade(item.validade)}
                 </Text>
 
                 {item.observacao?.trim() && (
                   <Text style={styles.materialDetail}>
-                    <Text style={styles.materialDetailLabel}>Observação: </Text>
+                    <Text style={styles.materialDetailLabel}>
+                      📝 Observação:{" "}
+                    </Text>
                     {item.observacao}
                   </Text>
                 )}
               </View>
 
-              <Text style={styles.retiradaLabel}>Quantidade para retirar</Text>
+              <Text style={styles.retiradaLabel}>📤 Quantidade para retirar</Text>
 
               <TextInput
                 testID="input-retirada"
@@ -734,7 +821,7 @@ export default function App() {
                 {baixasEmAndamento[String(item.id)] ? (
                   <ActivityIndicator size="small" color="#fff" />
                 ) : (
-                  <Text style={styles.baixarButtonText}>Dar baixa</Text>
+                  <Text style={styles.baixarButtonText}>⬇️ Dar baixa</Text>
                 )}
               </TouchableOpacity>
 
@@ -755,7 +842,7 @@ export default function App() {
                 {exclusoesEmAndamento[String(item.id)] ? (
                   <ActivityIndicator size="small" color="#fff" />
                 ) : (
-                  <Text style={styles.excluirButtonText}>Excluir material</Text>
+                  <Text style={styles.excluirButtonText}>🗑️ Excluir material</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -795,221 +882,365 @@ export default function App() {
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
+  flex: 1,
+  backgroundColor: "#F4F6F8",
+},
+listContent: {
+  paddingTop: 32,
+  paddingHorizontal: 16,
+  paddingBottom: 40,
+  flexGrow: 1,
+  width: "100%",
+  maxWidth: 1100,
+  alignSelf: "center",
+},
+heroCard: {
+  backgroundColor: "#1B5E20",
+  borderRadius: 18,
+  padding: 24,
+  marginBottom: 18,
+  alignItems: "center",
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 4,
   },
-  listContent: {
-    paddingTop: 50,
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    flexGrow: 1,
+  shadowOpacity: 0.12,
+  shadowRadius: 8,
+  elevation: 4,
+},
+heroIcon: {
+  fontSize: 34,
+  marginBottom: 8,
+},
+title: {
+  fontSize: 26,
+  fontWeight: "bold",
+  textAlign: "center",
+  color: "#fff",
+  marginBottom: 8,
+},
+description: {
+  fontSize: 15,
+  color: "#E8F5E9",
+  textAlign: "center",
+  lineHeight: 22,
+  maxWidth: 760,
+},
+formCard: {
+  backgroundColor: "#fff",
+  borderRadius: 18,
+  padding: 20,
+  marginBottom: 18,
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 3,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 10, // Reduzido ligeiramente para aproximar o texto explicativo
-    color: "#333",
+  shadowOpacity: 0.08,
+  shadowRadius: 8,
+  elevation: 3,
+},
+searchCard: {
+  backgroundColor: "#fff",
+  borderRadius: 18,
+  padding: 20,
+  marginBottom: 14,
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2,
   },
-  description: {
-    fontSize: 14,
-    color: "#666",
-    textAlign: "center",
-    lineHeight: 20, // Dá um espaçamento confortável entre as linhas do parágrafo
-    marginBottom: 30, // Margem inferior para afastar o texto dos futuros inputs dos alunos
+  shadowOpacity: 0.06,
+  shadowRadius: 6,
+  elevation: 2,
+},
+sectionHeader: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 16,
+},
+sectionIcon: {
+  fontSize: 26,
+  marginRight: 10,
+},
+formTitle: {
+  fontSize: 20,
+  fontWeight: "bold",
+  color: "#1F2937",
+},
+formSubtitle: {
+  fontSize: 13,
+  color: "#6B7280",
+  marginTop: 2,
+},
+formGrid: {
+  flexDirection: "row",
+  flexWrap: "wrap",
+  gap: 12,
+},
+formField: {
+  flexGrow: 1,
+  flexBasis: 260,
+},
+formFieldSmall: {
+  flexBasis: 180,
+},
+formFieldFull: {
+  flexBasis: "100%",
+},
+label: {
+  fontSize: 14,
+  fontWeight: "700",
+  color: "#374151",
+  marginBottom: 6,
+},
+input: {
+  borderWidth: 1,
+  borderColor: "#D1D5DB",
+  borderRadius: 12,
+  paddingHorizontal: 14,
+  paddingVertical: 12,
+  marginBottom: 4,
+  backgroundColor: "#F9FAFB",
+  fontSize: 15,
+},
+observationInput: {
+  minHeight: 100,
+  paddingTop: 12,
+},
+button: {
+  backgroundColor: "#2E7D32",
+  paddingVertical: 14,
+  borderRadius: 14,
+  alignItems: "center",
+  marginTop: 16,
+},
+buttonText: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "bold",
+},
+sectionTitle: {
+  fontSize: 20,
+  fontWeight: "bold",
+  color: "#1F2937",
+},
+searchInput: {
+  borderWidth: 1,
+  borderColor: "#D1D5DB",
+  borderRadius: 12,
+  backgroundColor: "#F9FAFB",
+  paddingHorizontal: 14,
+  paddingVertical: 12,
+  marginBottom: 12,
+  fontSize: 15,
+},
+totalItems: {
+  fontSize: 14,
+  fontWeight: "bold",
+  color: "#4B5563",
+},
+materialItem: {
+  borderWidth: 1,
+  borderColor: "#E5E7EB",
+  borderRadius: 18,
+  padding: 16,
+  marginBottom: 14,
+  backgroundColor: "#fff",
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 6,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginBottom: 15,
-    backgroundColor: "#fff",
-  },
-  observationInput: {
-    minHeight: 90,
-    paddingTop: 10,
-  },
-  button: {
-    backgroundColor: "#2E7D32",
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
-  searchInput: {
-    borderWidth: 1,
-    borderColor: "#bbb",
-    borderRadius: 8,
-    backgroundColor: "#fff",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginBottom: 12,
-  },
-  totalItems: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#555",
-    marginBottom: 12,
-  },
-  materialItem: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 10,
-    backgroundColor: "#f9f9f9",
-  },
-  materialItemCritico: {
-    backgroundColor: "#FFEBEE",
-    borderColor: "#C62828",
-    borderWidth: 2,
-  },
-  criticalText: {
-    fontSize: 13,
-    fontWeight: "bold",
-    color: "#C62828",
-    marginTop: 6,
-  },
-  materialName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  materialQuantity: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 4,
-  },
-  materialDetails: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 10,
-    marginTop: 10,
-  },
-  materialDetail: {
-    fontSize: 13,
-    color: "#555",
-    lineHeight: 20,
-  },
-  materialDetailLabel: {
-    fontWeight: "bold",
-    color: "#333",
-  },
-  emptyText: {
-    fontSize: 14,
-    color: "#777",
-    textAlign: "center",
-  },
-  emptyContainer: {
-    alignItems: "center",
-    marginTop: 20,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: "#777",
-    textAlign: "center",
-  },
-  clearSearchButton: {
-    marginTop: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: "#1565C0",
-  },
-  clearSearchButtonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  loading: {
-    marginTop: 20,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  retiradaLabel: {
-    fontSize: 13,
-    fontWeight: "bold",
-    color: "#444",
-    marginTop: 12,
-    marginBottom: 6,
-  },
-  retiradaInput: {
-    borderWidth: 1,
-    borderColor: "#bbb",
-    borderRadius: 8,
-    backgroundColor: "#fff",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  baixarButton: {
-    backgroundColor: "#1565C0",
-    borderRadius: 8,
-    paddingVertical: 10,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  baixarButtonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  excluirButton: {
-    backgroundColor: "#C62828",
-    borderRadius: 8,
-    paddingVertical: 10,
-    alignItems: "center",
-    marginTop: 8,
-  },
-  excluirButtonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  errorContainer: {
-    backgroundColor: "#FFEBEE",
-    borderWidth: 1,
-    borderColor: "#C62828",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
-    alignItems: "center",
-  },
-  errorText: {
-    fontSize: 14,
-    color: "#B71C1C",
-    textAlign: "center",
-    lineHeight: 20,
-  },
-  retryButton: {
-    backgroundColor: "#C62828",
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginTop: 10,
-  },
-  retryButtonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
+  shadowOpacity: 0.06,
+  shadowRadius: 6,
+  elevation: 2,
+},
+materialItemCritico: {
+  backgroundColor: "#FFF5F5",
+  borderColor: "#EF4444",
+  borderLeftWidth: 6,
+},
+materialHeader: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  marginBottom: 12,
+},
+materialTitleArea: {
+  flexDirection: "row",
+  alignItems: "center",
+  flex: 1,
+  paddingRight: 12,
+},
+materialIcon: {
+  fontSize: 28,
+  marginRight: 10,
+},
+materialTitleText: {
+  flex: 1,
+},
+materialName: {
+  fontSize: 18,
+  fontWeight: "bold",
+  color: "#111827",
+},
+materialSubtitle: {
+  fontSize: 13,
+  color: "#6B7280",
+  marginTop: 3,
+},
+stockCard: {
+  minWidth: 92,
+  borderRadius: 14,
+  paddingVertical: 10,
+  paddingHorizontal: 12,
+  backgroundColor: "#E8F5E9",
+  alignItems: "center",
+},
+stockCardCritical: {
+  backgroundColor: "#FEE2E2",
+},
+stockNumber: {
+  fontSize: 24,
+  fontWeight: "bold",
+  color: "#1B5E20",
+},
+stockNumberCritical: {
+  color: "#B91C1C",
+},
+stockLabel: {
+  fontSize: 11,
+  fontWeight: "700",
+  color: "#2E7D32",
+  marginTop: 2,
+},
+stockLabelCritical: {
+  color: "#B91C1C",
+},
+criticalBadge: {
+  alignSelf: "flex-start",
+  backgroundColor: "#FEE2E2",
+  borderRadius: 999,
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  marginBottom: 10,
+},
+criticalBadgeText: {
+  fontSize: 13,
+  fontWeight: "bold",
+  color: "#B91C1C",
+},
+materialDetails: {
+  backgroundColor: "#F9FAFB",
+  borderRadius: 14,
+  padding: 12,
+  marginTop: 4,
+  borderWidth: 1,
+  borderColor: "#EEF2F7",
+},
+materialDetail: {
+  fontSize: 14,
+  color: "#4B5563",
+  lineHeight: 22,
+},
+materialDetailLabel: {
+  fontWeight: "bold",
+  color: "#111827",
+},
+retiradaLabel: {
+  fontSize: 14,
+  fontWeight: "bold",
+  color: "#374151",
+  marginTop: 14,
+  marginBottom: 8,
+},
+retiradaInput: {
+  borderWidth: 1,
+  borderColor: "#D1D5DB",
+  borderRadius: 12,
+  backgroundColor: "#F9FAFB",
+  paddingHorizontal: 12,
+  paddingVertical: 10,
+  fontSize: 15,
+},
+baixarButton: {
+  backgroundColor: "#1565C0",
+  borderRadius: 12,
+  paddingVertical: 12,
+  alignItems: "center",
+  marginTop: 10,
+},
+baixarButtonText: {
+  color: "#fff",
+  fontSize: 15,
+  fontWeight: "bold",
+},
+excluirButton: {
+  backgroundColor: "#C62828",
+  borderRadius: 12,
+  paddingVertical: 12,
+  alignItems: "center",
+  marginTop: 8,
+},
+excluirButtonText: {
+  color: "#fff",
+  fontSize: 15,
+  fontWeight: "bold",
+},
+buttonDisabled: {
+  opacity: 0.6,
+},
+emptyContainer: {
+  alignItems: "center",
+  marginTop: 20,
+},
+emptyText: {
+  fontSize: 14,
+  color: "#777",
+  textAlign: "center",
+},
+clearSearchButton: {
+  marginTop: 12,
+  paddingHorizontal: 16,
+  paddingVertical: 8,
+  borderRadius: 10,
+  backgroundColor: "#1565C0",
+},
+clearSearchButtonText: {
+  color: "#fff",
+  fontSize: 14,
+  fontWeight: "bold",
+},
+loading: {
+  marginTop: 20,
+},
+errorContainer: {
+  backgroundColor: "#FFEBEE",
+  borderWidth: 1,
+  borderColor: "#C62828",
+  borderRadius: 12,
+  padding: 12,
+  marginTop: 12,
+  alignItems: "center",
+},
+errorText: {
+  fontSize: 14,
+  color: "#B71C1C",
+  textAlign: "center",
+  lineHeight: 20,
+},
+retryButton: {
+  backgroundColor: "#C62828",
+  borderRadius: 10,
+  paddingHorizontal: 16,
+  paddingVertical: 8,
+  marginTop: 10,
+},
+retryButtonText: {
+  color: "#fff",
+  fontSize: 14,
+  fontWeight: "bold",
+},
 });
