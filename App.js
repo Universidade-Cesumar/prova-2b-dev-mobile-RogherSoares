@@ -41,10 +41,13 @@ export default function App() {
   const [baixasEmAndamento, setBaixasEmAndamento] = useState({});
   const [exclusoesEmAndamento, setExclusoesEmAndamento] = useState({});
   const [busca, setBusca] = useState("");
+  const [erroConexao, setErroConexao] = useState(null);
 
   // --- Funções de Requisição e Efeitos ---
   const buscarMateriais = async (atualizacaoManual = false) => {
     try {
+      setErroConexao(null);
+
       if (atualizacaoManual) {
         setAtualizando(true);
       } else {
@@ -54,16 +57,26 @@ export default function App() {
       const resposta = await fetch(API_URL);
 
       if (!resposta.ok) {
-        throw new Error("Não foi possível buscar os materiais.");
+        throw new Error(
+          `Erro ${resposta.status}: não foi possível buscar os materiais.`,
+        );
       }
 
       const dados = await resposta.json();
 
       setMateriais(dados);
+      setErroConexao(null);
     } catch (erro) {
       console.error("Erro ao buscar materiais:", erro);
 
-      Alert.alert("Erro", "Não foi possível atualizar a lista de materiais.");
+      setErroConexao(
+        "Não foi possível carregar o inventário. Verifique sua conexão com a internet.",
+      );
+
+      Alert.alert(
+        "Falha de conexão",
+        "Não foi possível atualizar os materiais. Verifique sua internet e tente novamente.",
+      );
     } finally {
       if (atualizacaoManual) {
         setAtualizando(false);
@@ -403,6 +416,19 @@ export default function App() {
           : `${materiaisFiltrados.length} materiais encontrados`}
       </Text>
 
+      {erroConexao && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{erroConexao}</Text>
+
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={() => buscarMateriais()}
+          >
+            <Text style={styles.retryButtonText}>Tentar novamente</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {carregando ? (
         <ActivityIndicator
           size="large"
@@ -633,26 +659,26 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   emptyContainer: {
-  alignItems: "center",
-  marginTop: 20,
-},
-emptyText: {
-  fontSize: 14,
-  color: "#777",
-  textAlign: "center",
-},
-clearSearchButton: {
-  marginTop: 12,
-  paddingHorizontal: 16,
-  paddingVertical: 8,
-  borderRadius: 8,
-  backgroundColor: "#1565C0",
-},
-clearSearchButtonText: {
-  color: "#fff",
-  fontSize: 14,
-  fontWeight: "bold",
-},
+    alignItems: "center",
+    marginTop: 20,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: "#777",
+    textAlign: "center",
+  },
+  clearSearchButton: {
+    marginTop: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: "#1565C0",
+  },
+  clearSearchButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
   loading: {
     marginTop: 20,
   },
@@ -698,4 +724,31 @@ clearSearchButtonText: {
     fontSize: 14,
     fontWeight: "bold",
   },
+  errorContainer: {
+  backgroundColor: "#FFEBEE",
+  borderWidth: 1,
+  borderColor: "#C62828",
+  borderRadius: 8,
+  padding: 12,
+  marginBottom: 12,
+  alignItems: "center",
+},
+errorText: {
+  fontSize: 14,
+  color: "#B71C1C",
+  textAlign: "center",
+  lineHeight: 20,
+},
+retryButton: {
+  backgroundColor: "#C62828",
+  borderRadius: 8,
+  paddingHorizontal: 16,
+  paddingVertical: 8,
+  marginTop: 10,
+},
+retryButtonText: {
+  color: "#fff",
+  fontSize: 14,
+  fontWeight: "bold",
+},
 });
