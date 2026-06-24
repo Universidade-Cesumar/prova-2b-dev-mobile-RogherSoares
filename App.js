@@ -412,6 +412,28 @@ export default function App() {
         keyboardType="numeric"
       />
 
+      <Text style={styles.label}>Categoria</Text>
+
+      <TextInput
+        testID="input-categoria"
+        style={styles.input}
+        placeholder="Ex.: Material de consumo"
+        value={categoria}
+        onChangeText={setCategoria}
+        autoCapitalize="sentences"
+      />
+
+      <Text style={styles.label}>Unidade de medida</Text>
+
+      <TextInput
+        testID="input-unidade-medida"
+        style={styles.input}
+        placeholder="Ex.: Caixa, unidade, pacote"
+        value={unidadeMedida}
+        onChangeText={setUnidadeMedida}
+        autoCapitalize="sentences"
+      />
+
       <TouchableOpacity
         testID="btn-cadastrar"
         style={[styles.button, cadastrando && styles.buttonDisabled]}
