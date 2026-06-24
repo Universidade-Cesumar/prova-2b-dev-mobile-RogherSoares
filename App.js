@@ -406,7 +406,7 @@ export default function App() {
       ) : (
         <FlatList
           testID="lista-materiais"
-          data={materiais}
+          data={materiaisFiltrados}
           refreshing={atualizando}
           onRefresh={() => buscarMateriais(true)}
           keyExtractor={(item) => String(item.id)}
