@@ -379,6 +379,14 @@ export default function App() {
 
       <Text style={styles.sectionTitle}>Materiais cadastrados</Text>
 
+      <TextInput
+        testID="input-busca"
+        style={styles.searchInput}
+        placeholder="Pesquisar material..."
+        value={busca}
+        onChangeText={setBusca}
+      />
+
       {carregando ? (
         <ActivityIndicator
           size="large"
@@ -520,6 +528,15 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 10,
   },
+  searchInput: {
+  borderWidth: 1,
+  borderColor: "#bbb",
+  borderRadius: 8,
+  backgroundColor: "#fff",
+  paddingHorizontal: 12,
+  paddingVertical: 10,
+  marginBottom: 12,
+},
   materialItem: {
     borderWidth: 1,
     borderColor: "#ddd",
