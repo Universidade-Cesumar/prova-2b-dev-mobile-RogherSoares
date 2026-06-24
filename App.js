@@ -457,6 +457,20 @@ export default function App() {
         maxLength={10}
       />
 
+      <Text style={styles.label}>Observação</Text>
+
+      <TextInput
+        testID="input-observacao"
+        style={[styles.input, styles.observationInput]}
+        placeholder="Ex.: Manter em local seco"
+        value={observacao}
+        onChangeText={setObservacao}
+        multiline
+        numberOfLines={4}
+        textAlignVertical="top"
+        maxLength={300}
+      />
+
       <TouchableOpacity
         testID="btn-cadastrar"
         style={[styles.button, cadastrando && styles.buttonDisabled]}
@@ -661,6 +675,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: "#fff",
   },
+  observationInput: {
+  minHeight: 90,
+  paddingTop: 10,
+},
   button: {
     backgroundColor: "#2E7D32",
     paddingVertical: 12,
