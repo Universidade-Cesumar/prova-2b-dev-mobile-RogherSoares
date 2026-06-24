@@ -416,71 +416,93 @@ export default function App() {
           refreshing={atualizando}
           onRefresh={() => buscarMateriais(true)}
           keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => (
-            <View style={styles.materialItem}>
-              <Text style={styles.materialName}>{item.nome || item.name}</Text>
+          renderItem={({ item }) => {
+            const estoqueCritico = Number(item.quantidadeAtual) < 10;
 
-              <Text style={styles.materialQuantity}>
-                Quantidade disponível: {item.quantidadeAtual}
-              </Text>
-
-              <Text style={styles.label}>Quantidade para retirar</Text>
-
-              <TextInput
-                testID="input-retirada"
-                style={styles.retiradaInput}
-                placeholder="Ex.: 5"
-                keyboardType="numeric"
-                value={quantidadesRetirada[String(item.id)] || ""}
-                onChangeText={(novoValor) =>
-                  setQuantidadesRetirada((valoresAtuais) => ({
-                    ...valoresAtuais,
-                    [String(item.id)]: novoValor,
-                  }))
+            return (
+              <View
+                style={[
+                  styles.materialItem,
+                  estoqueCritico && styles.materialItemCritico,
+                ]}
+                accessibilityLabel={
+                  estoqueCritico ? "estoque-critico" : undefined
                 }
-              />
-              <TouchableOpacity
-                testID="btn-baixar"
-                style={[
-                  styles.baixarButton,
-                  (baixasEmAndamento[String(item.id)] ||
-                    exclusoesEmAndamento[String(item.id)]) &&
-                    styles.buttonDisabled,
-                ]}
-                onPress={() => solicitarBaixa(item)}
-                disabled={Boolean(
-                  baixasEmAndamento[String(item.id)] ||
-                  exclusoesEmAndamento[String(item.id)],
-                )}
               >
-                {baixasEmAndamento[String(item.id)] ? (
-                  <ActivityIndicator size="small" color="#fff" />
-                ) : (
-                  <Text style={styles.baixarButtonText}>Dar baixa</Text>
+                <Text style={styles.materialName}>
+                  {item.nome || item.name}
+                </Text>
+
+                <Text style={styles.materialQuantity}>
+                  Quantidade disponível: {item.quantidadeAtual}
+                </Text>
+
+                {estoqueCritico && (
+                  <Text style={styles.criticalText}>Estoque crítico</Text>
                 )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                testID="btn-excluir"
-                style={[
-                  styles.excluirButton,
-                  (exclusoesEmAndamento[String(item.id)] ||
-                    baixasEmAndamento[String(item.id)]) &&
-                    styles.buttonDisabled,
-                ]}
-                onPress={() => confirmarExclusao(item)}
-                disabled={Boolean(
-                  exclusoesEmAndamento[String(item.id)] ||
-                  baixasEmAndamento[String(item.id)],
-                )}
-              >
-                {exclusoesEmAndamento[String(item.id)] ? (
-                  <ActivityIndicator size="small" color="#fff" />
-                ) : (
-                  <Text style={styles.excluirButtonText}>Excluir material</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          )}
+
+                <Text style={styles.retiradaLabel}>
+                  Quantidade para retirar
+                </Text>
+
+                <TextInput
+                  testID="input-retirada"
+                  style={styles.retiradaInput}
+                  placeholder="Ex.: 5"
+                  keyboardType="numeric"
+                  value={quantidadesRetirada[String(item.id)] || ""}
+                  onChangeText={(novoValor) =>
+                    setQuantidadesRetirada((valoresAtuais) => ({
+                      ...valoresAtuais,
+                      [String(item.id)]: novoValor,
+                    }))
+                  }
+                />
+                <TouchableOpacity
+                  testID="btn-baixar"
+                  style={[
+                    styles.baixarButton,
+                    (baixasEmAndamento[String(item.id)] ||
+                      exclusoesEmAndamento[String(item.id)]) &&
+                      styles.buttonDisabled,
+                  ]}
+                  onPress={() => solicitarBaixa(item)}
+                  disabled={Boolean(
+                    baixasEmAndamento[String(item.id)] ||
+                    exclusoesEmAndamento[String(item.id)],
+                  )}
+                >
+                  {baixasEmAndamento[String(item.id)] ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.baixarButtonText}>Dar baixa</Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  testID="btn-excluir"
+                  style={[
+                    styles.excluirButton,
+                    (exclusoesEmAndamento[String(item.id)] ||
+                      baixasEmAndamento[String(item.id)]) &&
+                      styles.buttonDisabled,
+                  ]}
+                  onPress={() => confirmarExclusao(item)}
+                  disabled={Boolean(
+                    exclusoesEmAndamento[String(item.id)] ||
+                    baixasEmAndamento[String(item.id)],
+                  )}
+                >
+                  {exclusoesEmAndamento[String(item.id)] ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.excluirButtonText}>
+                      Excluir material
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            );
+          }}
           ListEmptyComponent={
             <Text style={styles.emptyText}>Nenhum material cadastrado.</Text>
           }
@@ -554,11 +576,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   totalItems: {
-  fontSize: 14,
-  fontWeight: "bold",
-  color: "#555",
-  marginBottom: 12,
-},
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#555",
+    marginBottom: 12,
+  },
   materialItem: {
     borderWidth: 1,
     borderColor: "#ddd",
@@ -567,6 +589,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#f9f9f9",
   },
+  materialItemCritico: {
+  backgroundColor: "#FFEBEE",
+  borderColor: "#C62828",
+  borderWidth: 2,
+},
+criticalText: {
+  fontSize: 13,
+  fontWeight: "bold",
+  color: "#C62828",
+  marginTop: 6,
+},
   materialName: {
     fontSize: 16,
     fontWeight: "bold",
