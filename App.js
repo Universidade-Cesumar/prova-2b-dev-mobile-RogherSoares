@@ -47,6 +47,22 @@ function validarData(dataInformada) {
   );
 }
 
+function formatarDataValidade(dataInformada) {
+  if (!dataInformada) {
+    return "Não informada";
+  }
+
+  const data = new Date(dataInformada);
+
+  if (Number.isNaN(data.getTime())) {
+    return String(dataInformada);
+  }
+
+  return data.toLocaleDateString("pt-BR", {
+    timeZone: "UTC",
+  });
+}
+
 export default function App() {
   // --- Estados da Aplicação ---
   const [nome, setNome] = useState("");
@@ -614,6 +630,41 @@ export default function App() {
                   <Text style={styles.criticalText}>Estoque crítico</Text>
                 )}
 
+                <View style={styles.materialDetails}>
+                  <Text style={styles.materialDetail}>
+                    <Text style={styles.materialDetailLabel}>Categoria: </Text>
+                    {item.categoria || "Não informada"}
+                  </Text>
+
+                  <Text style={styles.materialDetail}>
+                    <Text style={styles.materialDetailLabel}>
+                      Unidade de medida:{" "}
+                    </Text>
+                    {item.unidadeMedida || "Não informada"}
+                  </Text>
+
+                  <Text style={styles.materialDetail}>
+                    <Text style={styles.materialDetailLabel}>
+                      Localização:{" "}
+                    </Text>
+                    {item.localizacao || "Não informada"}
+                  </Text>
+
+                  <Text style={styles.materialDetail}>
+                    <Text style={styles.materialDetailLabel}>Validade: </Text>
+                    {formatarDataValidade(item.validade)}
+                  </Text>
+
+                  {item.observacao?.trim() && (
+                    <Text style={styles.materialDetail}>
+                      <Text style={styles.materialDetailLabel}>
+                        Observação:{" "}
+                      </Text>
+                      {item.observacao}
+                    </Text>
+                  )}
+                </View>
+
                 <Text style={styles.retiradaLabel}>
                   Quantidade para retirar
                 </Text>
@@ -804,6 +855,21 @@ const styles = StyleSheet.create({
     color: "#666",
     marginTop: 4,
   },
+  materialDetails: {
+  backgroundColor: "#fff",
+  borderRadius: 8,
+  padding: 10,
+  marginTop: 10,
+},
+materialDetail: {
+  fontSize: 13,
+  color: "#555",
+  lineHeight: 20,
+},
+materialDetailLabel: {
+  fontWeight: "bold",
+  color: "#333",
+},
   emptyText: {
     fontSize: 14,
     color: "#777",
