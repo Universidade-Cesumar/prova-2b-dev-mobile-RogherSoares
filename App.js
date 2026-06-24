@@ -29,6 +29,24 @@ export function validarRetirada(estoqueAtual, quantidadeRetirada) {
   );
 }
 
+function validarData(dataInformada) {
+  const formatoCorreto = /^\d{4}-\d{2}-\d{2}$/.test(dataInformada);
+
+  if (!formatoCorreto) {
+    return false;
+  }
+
+  const [ano, mes, dia] = dataInformada.split("-").map(Number);
+
+  const data = new Date(Date.UTC(ano, mes - 1, dia));
+
+  return (
+    data.getUTCFullYear() === ano &&
+    data.getUTCMonth() === mes - 1 &&
+    data.getUTCDate() === dia
+  );
+}
+
 export default function App() {
   // --- Estados da Aplicação ---
   const [nome, setNome] = useState("");
@@ -116,30 +134,88 @@ export default function App() {
 
   const validarFormulario = () => {
     const nomeTratado = nome.trim();
+    const categoriaTratada = categoria.trim();
+    const unidadeMedidaTratada = unidadeMedida.trim();
+    const localizacaoTratada = localizacao.trim();
+    const validadeTratada = validade.trim();
+    const observacaoTratada = observacao.trim();
+
     const quantidadeNumerica = Number(quantidade);
+    const estoqueMinimoNumerico = Number(estoqueMinimo);
 
     if (!nomeTratado) {
-      Alert.alert("Atenção", "Informe o nome do material.");
+      exibirAlerta("Atenção", "Informe o nome do material.");
+
       return null;
     }
 
     if (!quantidade.trim()) {
-      Alert.alert("Atenção", "Informe a quantidade do material.");
+      exibirAlerta("Atenção", "Informe a quantidade atual do material.");
+
       return null;
     }
 
     if (!Number.isInteger(quantidadeNumerica) || quantidadeNumerica <= 0) {
-      Alert.alert(
+      exibirAlerta(
         "Atenção",
-        "A quantidade deve ser um número inteiro maior que zero.",
+        "A quantidade atual deve ser um número inteiro maior que zero.",
+      );
+
+      return null;
+    }
+
+    if (!categoriaTratada) {
+      exibirAlerta("Atenção", "Informe a categoria do material.");
+
+      return null;
+    }
+
+    if (!unidadeMedidaTratada) {
+      exibirAlerta("Atenção", "Informe a unidade de medida.");
+
+      return null;
+    }
+
+    if (!estoqueMinimo.trim()) {
+      exibirAlerta("Atenção", "Informe o estoque mínimo.");
+
+      return null;
+    }
+
+    if (!Number.isInteger(estoqueMinimoNumerico) || estoqueMinimoNumerico < 0) {
+      exibirAlerta(
+        "Atenção",
+        "O estoque mínimo deve ser um número inteiro igual ou maior que zero.",
+      );
+
+      return null;
+    }
+
+    if (!localizacaoTratada) {
+      exibirAlerta("Atenção", "Informe a localização do material.");
+
+      return null;
+    }
+
+    if (validadeTratada && !validarData(validadeTratada)) {
+      exibirAlerta(
+        "Data inválida",
+        "Informe uma data válida no formato AAAA-MM-DD.",
       );
 
       return null;
     }
 
     return {
+      createdAt: new Date().toISOString(),
       nome: nomeTratado,
+      categoria: categoriaTratada,
+      unidadeMedida: unidadeMedidaTratada,
       quantidadeAtual: quantidadeNumerica,
+      estoqueMinimo: estoqueMinimoNumerico,
+      localizacao: localizacaoTratada,
+      validade: validadeTratada ? `${validadeTratada}T12:00:00.000Z` : "",
+      observacao: observacaoTratada,
     };
   };
 
@@ -175,6 +251,12 @@ export default function App() {
 
       setNome("");
       setQuantidade("");
+      setCategoria("");
+      setUnidadeMedida("");
+      setEstoqueMinimo("");
+      setLocalizacao("");
+      setValidade("");
+      setObservacao("");
 
       Alert.alert("Sucesso", "Material cadastrado com sucesso!");
     } catch (erro) {
@@ -676,9 +758,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   observationInput: {
-  minHeight: 90,
-  paddingTop: 10,
-},
+    minHeight: 90,
+    paddingTop: 10,
+  },
   button: {
     backgroundColor: "#2E7D32",
     paddingVertical: 12,
