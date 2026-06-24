@@ -504,7 +504,24 @@ export default function App() {
             );
           }}
           ListEmptyComponent={
-            <Text style={styles.emptyText}>Nenhum material cadastrado.</Text>
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                {busca.trim()
+                  ? "Nenhum material encontrado para esta pesquisa."
+                  : "Nenhum material cadastrado."}
+              </Text>
+
+              {busca.trim() && (
+                <TouchableOpacity
+                  style={styles.clearSearchButton}
+                  onPress={() => setBusca("")}
+                >
+                  <Text style={styles.clearSearchButtonText}>
+                    Limpar pesquisa
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
           }
         />
       )}
@@ -590,16 +607,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   materialItemCritico: {
-  backgroundColor: "#FFEBEE",
-  borderColor: "#C62828",
-  borderWidth: 2,
-},
-criticalText: {
-  fontSize: 13,
-  fontWeight: "bold",
-  color: "#C62828",
-  marginTop: 6,
-},
+    backgroundColor: "#FFEBEE",
+    borderColor: "#C62828",
+    borderWidth: 2,
+  },
+  criticalText: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: "#C62828",
+    marginTop: 6,
+  },
   materialName: {
     fontSize: 16,
     fontWeight: "bold",
@@ -614,8 +631,28 @@ criticalText: {
     fontSize: 14,
     color: "#777",
     textAlign: "center",
-    marginTop: 20,
   },
+  emptyContainer: {
+  alignItems: "center",
+  marginTop: 20,
+},
+emptyText: {
+  fontSize: 14,
+  color: "#777",
+  textAlign: "center",
+},
+clearSearchButton: {
+  marginTop: 12,
+  paddingHorizontal: 16,
+  paddingVertical: 8,
+  borderRadius: 8,
+  backgroundColor: "#1565C0",
+},
+clearSearchButtonText: {
+  color: "#fff",
+  fontSize: 14,
+  fontWeight: "bold",
+},
   loading: {
     marginTop: 20,
   },
