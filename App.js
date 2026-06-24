@@ -42,6 +42,12 @@ export default function App() {
   const [exclusoesEmAndamento, setExclusoesEmAndamento] = useState({});
   const [busca, setBusca] = useState("");
   const [erroConexao, setErroConexao] = useState(null);
+  const [categoria, setCategoria] = useState("");
+  const [unidadeMedida, setUnidadeMedida] = useState("");
+  const [estoqueMinimo, setEstoqueMinimo] = useState("");
+  const [localizacao, setLocalizacao] = useState("");
+  const [validade, setValidade] = useState("");
+  const [observacao, setObservacao] = useState("");
 
   // --- Funções de Requisição e Efeitos ---
   const exibirAlerta = (titulo, mensagem) => {
