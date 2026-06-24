@@ -171,6 +171,71 @@ Depois da confirmação da API, o registro também é removido da lista exibida 
 | Botão de baixa               | `testID="btn-baixar"`     |
 | Botão de exclusão            | `testID="btn-excluir"`    |
 
+## Demonstração do sistema
+
+Nesta seção são apresentadas as principais telas e funcionalidades do sistema mobile de controle de materiais do almoxarifado do curso de Enfermagem.
+
+### Tela inicial
+
+A tela inicial apresenta a identificação do sistema e o formulário utilizado para cadastrar novos materiais no estoque.
+
+<p align="center">
+  <img
+    src="./assets/screenshots/tela-inicial-web.png"
+    alt="Tela inicial do sistema de almoxarifado"
+    width="900"
+  />
+</p>
+
+### Cadastro de material
+
+O formulário permite registrar o nome do material, quantidade disponível, categoria, unidade de medida, localização, data de validade e uma observação opcional.
+
+<p align="center">
+  <img
+    src="./assets/screenshots/formulario-cadastro.png"
+    alt="Formulário de cadastro de materiais"
+    width="900"
+  />
+</p>
+
+### Lista de materiais cadastrados
+
+Os materiais recuperados da API são apresentados em cartões. Cada cartão mostra as informações do item e destaca a quantidade disponível no canto direito.
+
+<p align="center">
+  <img
+    src="./assets/screenshots/lista-materiais.png"
+    alt="Lista de materiais cadastrados"
+    width="900"
+  />
+</p>
+
+### Pesquisa em tempo real
+
+O campo de pesquisa permite localizar materiais por nome, categoria, unidade de medida, localização ou observação. O totalizador é atualizado automaticamente de acordo com o resultado da pesquisa.
+
+<p align="center">
+  <img
+    src="./assets/screenshots/pesquisa-material.png"
+    alt="Pesquisa de materiais em tempo real"
+    width="900"
+  />
+</p>
+
+### Alerta de estoque crítico
+
+Quando a quantidade disponível é menor que 10 unidades, o cartão recebe um destaque visual em vermelho e apresenta o aviso de estoque crítico.
+
+<p align="center">
+  <img
+    src="./assets/screenshots/estoque-critico.png"
+    alt="Material identificado com estoque crítico"
+    width="900"
+  />
+</p>
+
+
 ## Testes unitários
 
 Os testes unitários verificam as regras da função pura `validarRetirada`.
