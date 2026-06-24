@@ -459,11 +459,8 @@ export default function App() {
     return nomeMaterial.includes(textoBuscado);
   });
 
-  return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+  const renderCabecalho = () => (
+    <View>
       <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
 
       <Text style={styles.description}>
@@ -480,6 +477,7 @@ export default function App() {
         value={nome}
         onChangeText={setNome}
       />
+
       <Text style={styles.label}>Quantidade</Text>
 
       <TextInput
@@ -532,7 +530,6 @@ export default function App() {
         placeholder="Ex.: 2027-12-30"
         value={validade}
         onChangeText={setValidade}
-        keyboardType="numeric"
         maxLength={10}
       />
 
@@ -591,143 +588,145 @@ export default function App() {
           </TouchableOpacity>
         </View>
       )}
+    </View>
+  );
 
-      {carregando ? (
-        <ActivityIndicator
-          size="large"
-          color="#2E7D32"
-          style={styles.loading}
-        />
-      ) : (
-        <FlatList
-          testID="lista-materiais"
-          data={materiaisFiltrados}
-          refreshing={atualizando}
-          onRefresh={() => buscarMateriais(true)}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => {
-            const estoqueCritico = Number(item.quantidadeAtual) < 10;
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <FlatList
+        testID="lista-materiais"
+        data={carregando ? [] : materiaisFiltrados}
+        keyExtractor={(item) => String(item.id)}
+        refreshing={atualizando}
+        onRefresh={() => buscarMateriais(true)}
+        ListHeaderComponent={renderCabecalho}
+        contentContainerStyle={styles.listContent}
+        keyboardShouldPersistTaps="handled"
+        renderItem={({ item }) => {
+          const estoqueCritico = Number(item.quantidadeAtual) < 10;
 
-            return (
-              <View
-                style={[
-                  styles.materialItem,
-                  estoqueCritico && styles.materialItemCritico,
-                ]}
-                accessibilityLabel={
-                  estoqueCritico ? "estoque-critico" : undefined
-                }
-              >
-                <Text style={styles.materialName}>
-                  {item.nome || item.name}
+          return (
+            <View
+              style={[
+                styles.materialItem,
+                estoqueCritico && styles.materialItemCritico,
+              ]}
+              accessibilityLabel={
+                estoqueCritico ? "estoque-critico" : undefined
+              }
+            >
+              <Text style={styles.materialName}>{item.nome || item.name}</Text>
+
+              <Text style={styles.materialQuantity}>
+                Quantidade disponível: {item.quantidadeAtual}
+              </Text>
+
+              {estoqueCritico && (
+                <Text style={styles.criticalText}>Estoque crítico</Text>
+              )}
+
+              <View style={styles.materialDetails}>
+                <Text style={styles.materialDetail}>
+                  <Text style={styles.materialDetailLabel}>Categoria: </Text>
+                  {item.categoria || "Não informada"}
                 </Text>
 
-                <Text style={styles.materialQuantity}>
-                  Quantidade disponível: {item.quantidadeAtual}
+                <Text style={styles.materialDetail}>
+                  <Text style={styles.materialDetailLabel}>
+                    Unidade de medida:{" "}
+                  </Text>
+                  {item.unidadeMedida || "Não informada"}
                 </Text>
 
-                {estoqueCritico && (
-                  <Text style={styles.criticalText}>Estoque crítico</Text>
+                <Text style={styles.materialDetail}>
+                  <Text style={styles.materialDetailLabel}>Localização: </Text>
+                  {item.localizacao || "Não informada"}
+                </Text>
+
+                <Text style={styles.materialDetail}>
+                  <Text style={styles.materialDetailLabel}>Validade: </Text>
+                  {formatarDataValidade(item.validade)}
+                </Text>
+
+                {item.observacao?.trim() && (
+                  <Text style={styles.materialDetail}>
+                    <Text style={styles.materialDetailLabel}>Observação: </Text>
+                    {item.observacao}
+                  </Text>
                 )}
-
-                <View style={styles.materialDetails}>
-                  <Text style={styles.materialDetail}>
-                    <Text style={styles.materialDetailLabel}>Categoria: </Text>
-                    {item.categoria || "Não informada"}
-                  </Text>
-
-                  <Text style={styles.materialDetail}>
-                    <Text style={styles.materialDetailLabel}>
-                      Unidade de medida:{" "}
-                    </Text>
-                    {item.unidadeMedida || "Não informada"}
-                  </Text>
-
-                  <Text style={styles.materialDetail}>
-                    <Text style={styles.materialDetailLabel}>
-                      Localização:{" "}
-                    </Text>
-                    {item.localizacao || "Não informada"}
-                  </Text>
-
-                  <Text style={styles.materialDetail}>
-                    <Text style={styles.materialDetailLabel}>Validade: </Text>
-                    {formatarDataValidade(item.validade)}
-                  </Text>
-
-                  {item.observacao?.trim() && (
-                    <Text style={styles.materialDetail}>
-                      <Text style={styles.materialDetailLabel}>
-                        Observação:{" "}
-                      </Text>
-                      {item.observacao}
-                    </Text>
-                  )}
-                </View>
-
-                <Text style={styles.retiradaLabel}>
-                  Quantidade para retirar
-                </Text>
-
-                <TextInput
-                  testID="input-retirada"
-                  style={styles.retiradaInput}
-                  placeholder="Ex.: 5"
-                  keyboardType="numeric"
-                  value={quantidadesRetirada[String(item.id)] || ""}
-                  onChangeText={(novoValor) =>
-                    setQuantidadesRetirada((valoresAtuais) => ({
-                      ...valoresAtuais,
-                      [String(item.id)]: novoValor,
-                    }))
-                  }
-                />
-                <TouchableOpacity
-                  testID="btn-baixar"
-                  style={[
-                    styles.baixarButton,
-                    (baixasEmAndamento[String(item.id)] ||
-                      exclusoesEmAndamento[String(item.id)]) &&
-                      styles.buttonDisabled,
-                  ]}
-                  onPress={() => solicitarBaixa(item)}
-                  disabled={Boolean(
-                    baixasEmAndamento[String(item.id)] ||
-                    exclusoesEmAndamento[String(item.id)],
-                  )}
-                >
-                  {baixasEmAndamento[String(item.id)] ? (
-                    <ActivityIndicator size="small" color="#fff" />
-                  ) : (
-                    <Text style={styles.baixarButtonText}>Dar baixa</Text>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  testID="btn-excluir"
-                  style={[
-                    styles.excluirButton,
-                    (exclusoesEmAndamento[String(item.id)] ||
-                      baixasEmAndamento[String(item.id)]) &&
-                      styles.buttonDisabled,
-                  ]}
-                  onPress={() => confirmarExclusao(item)}
-                  disabled={Boolean(
-                    exclusoesEmAndamento[String(item.id)] ||
-                    baixasEmAndamento[String(item.id)],
-                  )}
-                >
-                  {exclusoesEmAndamento[String(item.id)] ? (
-                    <ActivityIndicator size="small" color="#fff" />
-                  ) : (
-                    <Text style={styles.excluirButtonText}>
-                      Excluir material
-                    </Text>
-                  )}
-                </TouchableOpacity>
               </View>
-            );
-          }}
-          ListEmptyComponent={
+
+              <Text style={styles.retiradaLabel}>Quantidade para retirar</Text>
+
+              <TextInput
+                testID="input-retirada"
+                style={styles.retiradaInput}
+                placeholder="Ex.: 5"
+                keyboardType="numeric"
+                value={quantidadesRetirada[String(item.id)] || ""}
+                onChangeText={(novoValor) =>
+                  setQuantidadesRetirada((valoresAtuais) => ({
+                    ...valoresAtuais,
+                    [String(item.id)]: novoValor,
+                  }))
+                }
+              />
+
+              <TouchableOpacity
+                testID="btn-baixar"
+                style={[
+                  styles.baixarButton,
+                  (baixasEmAndamento[String(item.id)] ||
+                    exclusoesEmAndamento[String(item.id)]) &&
+                    styles.buttonDisabled,
+                ]}
+                onPress={() => solicitarBaixa(item)}
+                disabled={Boolean(
+                  baixasEmAndamento[String(item.id)] ||
+                  exclusoesEmAndamento[String(item.id)],
+                )}
+              >
+                {baixasEmAndamento[String(item.id)] ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text style={styles.baixarButtonText}>Dar baixa</Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                testID="btn-excluir"
+                style={[
+                  styles.excluirButton,
+                  (exclusoesEmAndamento[String(item.id)] ||
+                    baixasEmAndamento[String(item.id)]) &&
+                    styles.buttonDisabled,
+                ]}
+                onPress={() => confirmarExclusao(item)}
+                disabled={Boolean(
+                  exclusoesEmAndamento[String(item.id)] ||
+                  baixasEmAndamento[String(item.id)],
+                )}
+              >
+                {exclusoesEmAndamento[String(item.id)] ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text style={styles.excluirButtonText}>Excluir material</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+        ListEmptyComponent={
+          carregando ? (
+            <ActivityIndicator
+              size="large"
+              color="#2E7D32"
+              style={styles.loading}
+            />
+          ) : erroConexao ? null : (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>
                 {busca.trim()
@@ -746,19 +745,22 @@ export default function App() {
                 </TouchableOpacity>
               )}
             </View>
-          }
-        />
-      )}
+          )
+        }
+      />
     </KeyboardAvoidingView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  listContent: {
     paddingTop: 50,
     paddingHorizontal: 20,
+    paddingBottom: 40,
+    flexGrow: 1,
   },
   title: {
     fontSize: 22,
@@ -856,20 +858,20 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   materialDetails: {
-  backgroundColor: "#fff",
-  borderRadius: 8,
-  padding: 10,
-  marginTop: 10,
-},
-materialDetail: {
-  fontSize: 13,
-  color: "#555",
-  lineHeight: 20,
-},
-materialDetailLabel: {
-  fontWeight: "bold",
-  color: "#333",
-},
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 10,
+  },
+  materialDetail: {
+    fontSize: 13,
+    color: "#555",
+    lineHeight: 20,
+  },
+  materialDetailLabel: {
+    fontWeight: "bold",
+    color: "#333",
+  },
   emptyText: {
     fontSize: 14,
     color: "#777",
