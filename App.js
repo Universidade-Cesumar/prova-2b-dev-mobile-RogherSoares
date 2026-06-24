@@ -40,6 +40,7 @@ export default function App() {
   const [quantidadesRetirada, setQuantidadesRetirada] = useState({});
   const [baixasEmAndamento, setBaixasEmAndamento] = useState({});
   const [exclusoesEmAndamento, setExclusoesEmAndamento] = useState({});
+  const [busca, setBusca] = useState("");
 
   // --- Funções de Requisição e Efeitos ---
   const buscarMateriais = async (atualizacaoManual = false) => {
