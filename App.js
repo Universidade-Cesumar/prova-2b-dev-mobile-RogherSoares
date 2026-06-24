@@ -397,6 +397,12 @@ export default function App() {
         onChangeText={setBusca}
       />
 
+      <Text testID="total-itens" style={styles.totalItems}>
+        {materiaisFiltrados.length === 1
+          ? "1 material encontrado"
+          : `${materiaisFiltrados.length} materiais encontrados`}
+      </Text>
+
       {carregando ? (
         <ActivityIndicator
           size="large"
@@ -547,6 +553,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 12,
   },
+  totalItems: {
+  fontSize: 14,
+  fontWeight: "bold",
+  color: "#555",
+  marginBottom: 12,
+},
   materialItem: {
     borderWidth: 1,
     borderColor: "#ddd",
