@@ -332,6 +332,16 @@ export default function App() {
     buscarMateriais();
   }, []);
 
+  const materiaisFiltrados = materiais.filter((material) => {
+    const nomeMaterial = String(
+      material.nome || material.name || "",
+    ).toLowerCase();
+
+    const textoBuscado = busca.trim().toLowerCase();
+
+    return nomeMaterial.includes(textoBuscado);
+  });
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -529,14 +539,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   searchInput: {
-  borderWidth: 1,
-  borderColor: "#bbb",
-  borderRadius: 8,
-  backgroundColor: "#fff",
-  paddingHorizontal: 12,
-  paddingVertical: 10,
-  marginBottom: 12,
-},
+    borderWidth: 1,
+    borderColor: "#bbb",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 12,
+  },
   materialItem: {
     borderWidth: 1,
     borderColor: "#ddd",
