@@ -44,6 +44,31 @@ export default function App() {
   const [erroConexao, setErroConexao] = useState(null);
 
   // --- Funções de Requisição e Efeitos ---
+  const exibirAlerta = (titulo, mensagem) => {
+    if (Platform.OS === "web") {
+      window.alert(`${titulo}\n\n${mensagem}`);
+      return;
+    }
+
+    Alert.alert(titulo, mensagem);
+  };
+
+  const obterMensagemErro = (erro, acao) => {
+    const mensagemTecnica = String(erro?.message || "").toLowerCase();
+
+    const falhaDeRede =
+      erro instanceof TypeError ||
+      mensagemTecnica.includes("network") ||
+      mensagemTecnica.includes("fetch") ||
+      mensagemTecnica.includes("conexão");
+
+    if (falhaDeRede) {
+      return `Não foi possível conectar ao servidor para ${acao}. Verifique sua internet e tente novamente.`;
+    }
+
+    return `Não foi possível ${acao}. Tente novamente.`;
+  };
+
   const buscarMateriais = async (atualizacaoManual = false) => {
     try {
       setErroConexao(null);
@@ -69,14 +94,11 @@ export default function App() {
     } catch (erro) {
       console.error("Erro ao buscar materiais:", erro);
 
-      setErroConexao(
-        "Não foi possível carregar o inventário. Verifique sua conexão com a internet.",
-      );
+      const mensagem = obterMensagemErro(erro, "carregar o inventário");
 
-      Alert.alert(
-        "Falha de conexão",
-        "Não foi possível atualizar os materiais. Verifique sua internet e tente novamente.",
-      );
+      setErroConexao(mensagem);
+
+      exibirAlerta("Falha de conexão", mensagem);
     } finally {
       if (atualizacaoManual) {
         setAtualizando(false);
@@ -152,10 +174,9 @@ export default function App() {
     } catch (erro) {
       console.error("Erro ao cadastrar material:", erro);
 
-      Alert.alert(
-        "Erro",
-        "Não foi possível cadastrar o material. Tente novamente.",
-      );
+      const mensagem = obterMensagemErro(erro, "cadastrar o material");
+
+      exibirAlerta("Erro no cadastro", mensagem);
     } finally {
       setCadastrando(false);
     }
@@ -242,10 +263,9 @@ export default function App() {
     } catch (erro) {
       console.error("Erro ao realizar baixa:", erro);
 
-      Alert.alert(
-        "Erro",
-        "Não foi possível realizar a baixa no estoque. Tente novamente.",
-      );
+      const mensagem = obterMensagemErro(erro, "realizar a baixa no estoque");
+
+      exibirAlerta("Erro na baixa", mensagem);
     } finally {
       setBaixasEmAndamento((estadoAtual) => {
         const novoEstado = { ...estadoAtual };
@@ -294,10 +314,9 @@ export default function App() {
     } catch (erro) {
       console.error("Erro ao excluir material:", erro);
 
-      Alert.alert(
-        "Erro",
-        "Não foi possível excluir o material. Tente novamente.",
-      );
+      const mensagem = obterMensagemErro(erro, "excluir o material");
+
+      exibirAlerta("Erro na exclusão", mensagem);
     } finally {
       setExclusoesEmAndamento((estadoAtual) => {
         const novoEstado = { ...estadoAtual };
@@ -725,30 +744,30 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   errorContainer: {
-  backgroundColor: "#FFEBEE",
-  borderWidth: 1,
-  borderColor: "#C62828",
-  borderRadius: 8,
-  padding: 12,
-  marginBottom: 12,
-  alignItems: "center",
-},
-errorText: {
-  fontSize: 14,
-  color: "#B71C1C",
-  textAlign: "center",
-  lineHeight: 20,
-},
-retryButton: {
-  backgroundColor: "#C62828",
-  borderRadius: 8,
-  paddingHorizontal: 16,
-  paddingVertical: 8,
-  marginTop: 10,
-},
-retryButtonText: {
-  color: "#fff",
-  fontSize: 14,
-  fontWeight: "bold",
-},
+    backgroundColor: "#FFEBEE",
+    borderWidth: 1,
+    borderColor: "#C62828",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 14,
+    color: "#B71C1C",
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  retryButton: {
+    backgroundColor: "#C62828",
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginTop: 10,
+  },
+  retryButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
 });
