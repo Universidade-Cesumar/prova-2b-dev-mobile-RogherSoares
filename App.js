@@ -459,7 +459,7 @@ export default function App() {
     return nomeMaterial.includes(textoBuscado);
   });
 
-  const renderCabecalho = () => (
+  const cabecalhoLista = (
     <View>
       <Text style={styles.title}>Almoxarifado - Enfermagem</Text>
 
@@ -602,7 +602,7 @@ export default function App() {
         keyExtractor={(item) => String(item.id)}
         refreshing={atualizando}
         onRefresh={() => buscarMateriais(true)}
-        ListHeaderComponent={renderCabecalho}
+        ListHeaderComponent={cabecalhoLista}
         contentContainerStyle={styles.listContent}
         keyboardShouldPersistTaps="handled"
         renderItem={({ item }) => {
